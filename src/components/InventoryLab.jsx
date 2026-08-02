@@ -9,6 +9,7 @@
  */
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import {
   Server, Users, Plus, Trash2, Filter, X,
   CheckCircle2, XCircle, ChevronRight, AlertTriangle,
@@ -31,6 +32,7 @@ const DEFAULT_INVENTORY = {
 // ── Replace/Append modal ─────────────────────────────────────────────────────
 
 function ImportModal({ parsed, format, onConfirm, onCancel }) {
+  const { t } = useTranslation()
   const groupCount = Object.keys(parsed).length
   const hostCount  = new Set(Object.values(parsed).flat()).size
   return (
@@ -39,35 +41,35 @@ function ImportModal({ parsed, format, onConfirm, onCancel }) {
         className="rounded-xl border border-slate-700 bg-slate-900 shadow-2xl p-6 w-[calc(100%-2rem)] max-w-[380px] flex flex-col gap-4 animate-scale-in">
         <div className="flex items-center gap-2">
           <FileInput size={16} className="text-emerald-400" />
-          <span className="text-emerald-400 font-mono font-semibold text-sm uppercase tracking-widest">Import Inventory</span>
+          <span className="text-emerald-400 font-mono font-semibold text-sm uppercase tracking-widest">{t('inventoryLab.importModal.title')}</span>
         </div>
         <p className="text-slate-300 text-xs leading-relaxed">
-          Detected <span className="text-amber-300 font-mono">{format.toUpperCase()}</span> inventory with{' '}
-          <span className="text-cyan-300 font-mono">{groupCount} group{groupCount !== 1 ? 's' : ''}</span> and{' '}
-          <span className="text-cyan-300 font-mono">{hostCount} unique host{hostCount !== 1 ? 's' : ''}</span>.
+          {t('inventoryLab.importModal.detected')} <span className="text-amber-300 font-mono">{format.toUpperCase()}</span> {t('inventoryLab.importModal.inventoryWith')}{' '}
+          <span className="text-cyan-300 font-mono">{t('inventoryLab.importModal.groupCount', { count: groupCount })}</span> {t('inventoryLab.importModal.and')}{' '}
+          <span className="text-cyan-300 font-mono">{t('inventoryLab.importModal.hostCount', { count: hostCount })}</span>.
         </p>
-        <p className="text-slate-400 text-xs">What would you like to do with your existing inventory?</p>
+        <p className="text-slate-400 text-xs">{t('inventoryLab.importModal.whatToDo')}</p>
         <div className="flex flex-col gap-2 sm:flex-row">
           <button
             onClick={() => onConfirm('replace')}
             className="flex-1 py-2 rounded border border-red-800 bg-red-950 text-red-300
               text-xs font-mono hover:border-red-600 hover:text-red-200 transition-all"
           >
-            Replace
+            {t('inventoryLab.importModal.replace')}
           </button>
           <button
             onClick={() => onConfirm('append')}
             className="flex-1 py-2 rounded border border-emerald-700 bg-emerald-950 text-emerald-300
               text-xs font-mono hover:border-emerald-500 hover:text-emerald-200 transition-all"
           >
-            Append
+            {t('inventoryLab.importModal.append')}
           </button>
           <button
             onClick={onCancel}
             className="px-3 py-2 rounded border border-slate-700 text-slate-500
               text-xs font-mono hover:text-slate-300 transition-all"
           >
-            Cancel
+            {t('inventoryLab.importModal.cancel')}
           </button>
         </div>
       </div>
@@ -92,6 +94,7 @@ function HostPill({ name, onRemove }) {
 }
 
 function GroupRow({ groupName, hosts, allHosts, onAddHost, onRemoveHost, onRemoveGroup, isAll }) {
+  const { t } = useTranslation()
   const [input, setInput] = useState('')
   const [open, setOpen] = useState(false)
 
@@ -111,12 +114,12 @@ function GroupRow({ groupName, hosts, allHosts, onAddHost, onRemoveHost, onRemov
         </button>
         <Users size={12} className="text-emerald-500 shrink-0" />
         <span className="text-emerald-300 font-mono text-xs font-semibold flex-1">{groupName}</span>
-        <span className="text-slate-600 text-[10px] font-mono">{hosts.length} host{hosts.length !== 1 ? 's' : ''}</span>
+        <span className="text-slate-600 text-[10px] font-mono">{t('inventoryLab.groupRow.hostCount', { count: hosts.length })}</span>
         {!isAll && (
           <button
             onClick={() => onRemoveGroup(groupName)}
             className="text-slate-700 hover:text-red-400 transition-colors ml-1 p-1"
-            title="Remove group"
+            title={t('inventoryLab.groupRow.removeGroup')}
           >
             <Trash2 size={11} />
           </button>
@@ -128,7 +131,7 @@ function GroupRow({ groupName, hosts, allHosts, onAddHost, onRemoveHost, onRemov
           {/* Host pills */}
           <div className="flex flex-wrap gap-1.5 mb-2">
             {hosts.length === 0 && (
-              <span className="text-slate-700 text-[10px] font-mono italic">no hosts</span>
+              <span className="text-slate-700 text-[10px] font-mono italic">{t('inventoryLab.groupRow.noHosts')}</span>
             )}
             {hosts.map((h) => (
               <HostPill
@@ -146,7 +149,7 @@ function GroupRow({ groupName, hosts, allHosts, onAddHost, onRemoveHost, onRemov
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-              placeholder="hostname…"
+              placeholder={t('inventoryLab.groupRow.hostnamePlaceholder')}
               list={`hosts-datalist-${groupName}`}
               className="flex-1 bg-slate-950 border border-slate-700 focus:border-emerald-600
                 rounded px-2 py-0.5 text-[10px] font-mono text-slate-200
@@ -165,7 +168,7 @@ function GroupRow({ groupName, hosts, allHosts, onAddHost, onRemoveHost, onRemov
                 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
               <Plus size={10} />
-              add
+              {t('inventoryLab.groupRow.add')}
             </button>
           </div>
         </div>
@@ -175,6 +178,7 @@ function GroupRow({ groupName, hosts, allHosts, onAddHost, onRemoveHost, onRemov
 }
 
 function InventoryEditor({ inventory, hostvars, onInventoryChange, onHostvarsChange, onSyncToPlaybook }) {
+  const { t } = useTranslation()
   const [newGroup, setNewGroup]       = useState('')
   const [isDragging, setIsDragging]   = useState(false)
   const [importError, setImportError] = useState(null)
@@ -226,11 +230,11 @@ function InventoryEditor({ inventory, hostvars, onInventoryChange, onHostvarsCha
     setImportError(null)
     const { groups, format, hostvars, error } = parseInventoryText(text)
     if (error || !groups) {
-      setImportError(error || 'Could not parse inventory.')
+      setImportError(error || t('inventoryLab.editor.couldNotParse'))
       return
     }
     setPending({ groups, format, hostvars: hostvars ?? {} })
-  }, [])
+  }, [t])
 
   const handleConfirm = useCallback((mode) => {
     if (!pending) return
@@ -309,7 +313,7 @@ function InventoryEditor({ inventory, hostvars, onInventoryChange, onHostvarsCha
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
             <div className="rounded-xl border-2 border-dashed border-emerald-500/60 bg-emerald-950/70 px-8 py-6 flex flex-col items-center gap-2">
               <Upload size={24} className="text-emerald-400" />
-              <span className="text-emerald-300 text-xs font-mono">Drop inventory file</span>
+              <span className="text-emerald-300 text-xs font-mono">{t('inventoryLab.editor.dropInventoryFile')}</span>
             </div>
           </div>
         )}
@@ -318,29 +322,29 @@ function InventoryEditor({ inventory, hostvars, onInventoryChange, onHostvarsCha
         <div className="px-4 py-3 border-b border-slate-800 flex items-center gap-2 shrink-0">
           <Server size={14} className="text-emerald-400" />
           <span className="text-emerald-400 text-xs font-mono font-semibold uppercase tracking-widest flex-1">
-            Inventory
+            {t('inventoryLab.editor.title')}
           </span>
-          <span className="text-slate-600 text-[10px] font-mono">{allHosts.length} host{allHosts.length !== 1 ? 's' : ''}</span>
+          <span className="text-slate-600 text-[10px] font-mono">{t('inventoryLab.editor.hostCount', { count: allHosts.length })}</span>
           {allHosts.length > 0 && (
             <button
               onClick={() => onSyncToPlaybook?.({ inventory, hostvars })}
-              title="Add this inventory to the Playbook project so it resolves real group_vars/host_vars"
+              title={t('inventoryLab.editor.useInPlaybookTitle')}
               className="flex items-center gap-1 px-2 py-0.5 rounded border border-slate-700
                 text-[10px] font-mono text-slate-500 hover:text-cyan-300 hover:border-cyan-700 transition-all min-h-[36px] sm:min-h-0"
             >
               <ArrowRightLeft size={10} />
-              Use in Playbook
+              {t('inventoryLab.editor.useInPlaybook')}
             </button>
           )}
           <button
             data-tour="inventory-import"
             onClick={() => fileInputRef.current?.click()}
-            title="Upload inventory file"
+            title={t('inventoryLab.editor.uploadTitle')}
             className="flex items-center gap-1 px-2 py-0.5 rounded border border-slate-700
               text-[10px] font-mono text-slate-500 hover:text-emerald-300 hover:border-emerald-700 transition-all min-h-[36px] sm:min-h-0"
           >
             <Upload size={10} />
-            Import
+            {t('inventoryLab.editor.import')}
           </button>
           <input ref={fileInputRef} type="file" accept=".json,.ini,.cfg,.yml,.yaml,.inv,*" className="hidden" onChange={handleFileChange} />
           <button
@@ -349,14 +353,14 @@ function InventoryEditor({ inventory, hostvars, onInventoryChange, onHostvarsCha
               text-[10px] font-mono text-slate-500 hover:text-slate-300 hover:border-slate-500 transition-all min-h-[36px] sm:min-h-0"
           >
             <RefreshCw size={10} />
-            Reset
+            {t('inventoryLab.editor.reset')}
           </button>
         </div>
 
         {/* Command hint + import bar */}
         <div className="px-4 py-2 border-b border-slate-800/60 bg-slate-950 flex flex-col gap-1.5 shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-slate-500 text-[10px] font-mono shrink-0">Export from Ansible:</span>
+            <span className="text-slate-500 text-[10px] font-mono shrink-0">{t('inventoryLab.editor.exportFrom')}</span>
             <code className="flex-1 min-w-0 overflow-x-auto whitespace-nowrap bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-[10px] font-mono text-emerald-300 select-all">
               ansible-inventory -i &lt;source&gt; --list &gt; inventory.json
             </code>
@@ -366,7 +370,7 @@ function InventoryEditor({ inventory, hostvars, onInventoryChange, onHostvarsCha
                 setCmdCopied(true)
                 setTimeout(() => setCmdCopied(false), 2000)
               }}
-              title="Copy command"
+              title={t('inventoryLab.editor.copyCommandTitle')}
               className={`flex items-center gap-1 px-2 py-0.5 rounded border text-[10px] font-mono transition-all
                 min-h-[36px] sm:min-h-0
                 ${cmdCopied
@@ -374,12 +378,12 @@ function InventoryEditor({ inventory, hostvars, onInventoryChange, onHostvarsCha
                   : 'border-slate-700 text-slate-500 hover:text-emerald-300 hover:border-emerald-700'}`}
             >
               {cmdCopied ? <Check size={10} /> : <Copy size={10} />}
-              {cmdCopied ? 'Copied' : 'Copy'}
+              {cmdCopied ? t('inventoryLab.editor.copied') : t('inventoryLab.editor.copy')}
             </button>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <span className="text-slate-600 text-[10px] font-mono flex flex-wrap items-center gap-1.5">
-              Then <ClipboardPaste size={10} /> paste · <Upload size={10} /> drag &amp; drop · or click Import — supports JSON, INI &amp; YAML
+              {t('inventoryLab.editor.thenPart')} <ClipboardPaste size={10} /> {t('inventoryLab.editor.pastePart')} <Upload size={10} /> {t('inventoryLab.editor.dragPart')}
             </span>
             {importError && (
               <span className="flex items-center gap-1 text-red-400 text-[10px] font-mono sm:ml-auto">
@@ -412,7 +416,7 @@ function InventoryEditor({ inventory, hostvars, onInventoryChange, onHostvarsCha
               value={newGroup}
               onChange={(e) => setNewGroup(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddGroup()}
-              placeholder="new group name…"
+              placeholder={t('inventoryLab.editor.newGroupPlaceholder')}
               className="flex-1 bg-slate-900 border border-slate-800 focus:border-emerald-700
                 rounded px-2 py-1 text-[10px] font-mono text-slate-300
                 outline-none transition-colors placeholder:text-slate-700"
@@ -425,7 +429,7 @@ function InventoryEditor({ inventory, hostvars, onInventoryChange, onHostvarsCha
                 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
               <Plus size={10} />
-              Add Group
+              {t('inventoryLab.editor.addGroup')}
             </button>
           </div>
         </div>
@@ -439,6 +443,7 @@ function InventoryEditor({ inventory, hostvars, onInventoryChange, onHostvarsCha
 // ── Host detail sidebar ──────────────────────────────────────────────────────────
 
 function HostDetailSidebar({ host, hostvars, inventory, onClose, onGroupClick }) {
+  const { t } = useTranslation()
   const attrs = hostvars?.[host] ?? {}
   const entries = Object.entries(attrs)
   const [copiedKey, setCopiedKey] = useState(null)
@@ -474,7 +479,7 @@ function HostDetailSidebar({ host, hostvars, inventory, onClose, onGroupClick })
         <button
           onClick={onClose}
           className="text-slate-500 hover:text-white transition-colors rounded p-0.5 hover:bg-slate-700"
-          title="Close (Esc)"
+          title={t('inventoryLab.hostDetail.closeTitle')}
         >
           <X size={13} />
         </button>
@@ -483,16 +488,16 @@ function HostDetailSidebar({ host, hostvars, inventory, onClose, onGroupClick })
       <div className="flex-1 overflow-y-auto">
         {/* Group membership */}
         <div className="px-4 py-3 border-b border-slate-800/60">
-          <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-2">Member of</p>
+          <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-2">{t('inventoryLab.hostDetail.memberOf')}</p>
           {groups.length === 0 ? (
-            <span className="text-slate-700 text-[10px] font-mono italic">no groups</span>
+            <span className="text-slate-700 text-[10px] font-mono italic">{t('inventoryLab.hostDetail.noGroups')}</span>
           ) : (
             <div className="flex flex-wrap gap-1">
               {groups.map((g) => (
                 <button
                   key={g}
                   onClick={() => onGroupClick?.(g)}
-                  title={`Add "${g}" to limit filter`}
+                  title={t('inventoryLab.hostDetail.addToLimitTitle', { group: g })}
                   className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono
                     bg-slate-900 border border-slate-700 text-slate-300
                     hover:border-emerald-600 hover:text-emerald-300 hover:bg-emerald-950/30 min-h-[32px] sm:min-h-0
@@ -508,10 +513,10 @@ function HostDetailSidebar({ host, hostvars, inventory, onClose, onGroupClick })
 
         {/* Host variables */}
         <div className="px-4 py-3">
-          <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-3">Host Variables</p>
+          <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-3">{t('inventoryLab.hostDetail.hostVariables')}</p>
           {entries.length === 0 ? (
             <p className="text-slate-600 text-[11px] font-mono leading-relaxed">
-              No variables — import a JSON inventory to see <code className="text-slate-500">_meta.hostvars</code>.
+              {t('inventoryLab.hostDetail.noVariablesPrefix')} <code className="text-slate-500">_meta.hostvars</code>.
             </p>
           ) : (
             <div className="flex flex-col gap-2.5">
@@ -522,7 +527,7 @@ function HostDetailSidebar({ host, hostvars, inventory, onClose, onGroupClick })
                     <span className="text-[11px] font-mono text-cyan-300 break-all flex-1">{String(v)}</span>
                     <button
                       onClick={() => copyValue(k, v)}
-                      title="Copy value"
+                      title={t('inventoryLab.hostDetail.copyValueTitle')}
                       className={`shrink-0 transition-colors ${
                         copiedKey === k ? 'text-emerald-400' : 'text-slate-600 hover:text-cyan-400'
                       }`}
@@ -552,7 +557,7 @@ function HostDetailSidebar({ host, hostvars, inventory, onClose, onGroupClick })
   return createPortal(
     <>
       <button
-        aria-label="Close host details"
+        aria-label={t('inventoryLab.hostDetail.closeHostDetails')}
         className="fixed inset-0 z-30 bg-black/50 backdrop-blur-[1px]"
         onClick={onClose}
       />
@@ -567,6 +572,7 @@ function HostDetailSidebar({ host, hostvars, inventory, onClose, onGroupClick })
 // ── Limit autocomplete input ───────────────────────────────────────────────────
 
 function LimitInput({ value, onChange, inventory, dataTour }) {
+  const { t } = useTranslation()
   const [showSugg, setShowSugg] = useState(false)
   const [activeIdx, setActiveIdx] = useState(0)
   const inputRef = useRef(null)
@@ -617,7 +623,7 @@ function LimitInput({ value, onChange, inventory, dataTour }) {
         onKeyDown={handleKeyDown}
         onFocus={() => { setShowSugg(true); setActiveIdx(0) }}
         onBlur={() => setTimeout(() => setShowSugg(false), 150)}
-        placeholder="e.g. web:&production  or  web-0*  or  all:!staging"
+        placeholder={t('inventoryLab.limitInput.placeholder')}
         className="w-full bg-slate-900 border border-slate-700 focus:border-amber-600
           rounded px-3 py-1.5 text-[12px] font-mono text-slate-200
           outline-none transition-colors placeholder:text-slate-700"
@@ -648,11 +654,12 @@ function LimitInput({ value, onChange, inventory, dataTour }) {
 
 
 function MatchedHostBadge({ name, matched, hasHostvars, onClick, style }) {
+  const { t } = useTranslation()
   return (
     <button
       onClick={onClick}
       style={style}
-      title={hasHostvars ? 'Click to view host attributes' : name}
+      title={hasHostvars ? t('inventoryLab.limitTester.clickToViewAttrs') : name}
       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono border transition-all animate-pop-in
         min-h-[34px] sm:min-h-0
         ${matched
@@ -671,15 +678,16 @@ function MatchedHostBadge({ name, matched, hasHostvars, onClick, style }) {
 // ── Group result card ────────────────────────────────────────────────────────
 
 const EXAMPLE_PATTERNS = [
-  { pattern: 'web',              desc: 'single group' },
-  { pattern: 'web:db',           desc: 'union' },
-  { pattern: 'production:&web',  desc: 'intersection' },
-  { pattern: 'all:!staging',     desc: 'exclude group' },
-  { pattern: 'web-0*',           desc: 'wildcard' },
-  { pattern: 'web-01,db-01',     desc: 'comma list' },
+  { pattern: 'web',              descKey: 'inventoryLab.limitTester.examples.singleGroup' },
+  { pattern: 'web:db',           descKey: 'inventoryLab.limitTester.examples.union' },
+  { pattern: 'production:&web',  descKey: 'inventoryLab.limitTester.examples.intersection' },
+  { pattern: 'all:!staging',     descKey: 'inventoryLab.limitTester.examples.excludeGroup' },
+  { pattern: 'web-0*',           descKey: 'inventoryLab.limitTester.examples.wildcard' },
+  { pattern: 'web-01,db-01',     descKey: 'inventoryLab.limitTester.examples.commaList' },
 ]
 
 function GroupResultCard({ groupName, groupHosts, matchedSet, limit, hostvars, onHostClick }) {
+  const { t } = useTranslation()
   const hasLimit = limit && limit.trim()
   const matchCount = groupHosts.filter((h) => matchedSet.has(h)).length
 
@@ -703,18 +711,18 @@ function GroupResultCard({ groupName, groupHosts, matchedSet, limit, hostvars, o
           <span className={`ml-auto text-[10px] font-mono
             ${isFullMatch ? 'text-emerald-400' : isNoMatch ? 'text-red-400' : 'text-amber-400'}`}
           >
-            {matchCount}/{groupHosts.length} matched
+            {t('inventoryLab.limitTester.groupMatched', { matched: matchCount, total: groupHosts.length })}
           </span>
         )}
         {!hasLimit && (
           <span className="ml-auto text-slate-600 text-[10px] font-mono">
-            {groupHosts.length} host{groupHosts.length !== 1 ? 's' : ''}
+            {t('inventoryLab.editor.hostCount', { count: groupHosts.length })}
           </span>
         )}
       </div>
       <div className="flex flex-wrap gap-1.5">
         {groupHosts.length === 0 && (
-          <span className="text-slate-700 text-[10px] italic">empty</span>
+          <span className="text-slate-700 text-[10px] italic">{t('inventoryLab.limitTester.empty')}</span>
         )}
         {groupHosts.map((h, idx) => (
           <MatchedHostBadge
@@ -732,6 +740,7 @@ function GroupResultCard({ groupName, groupHosts, matchedSet, limit, hostvars, o
 }
 
 function LimitTester({ inventory, hostvars, selectedHost, onHostClick, limit, onLimitChange }) {
+  const { t } = useTranslation()
   const [showRef, setShowRef] = useState(false)
 
   // Also support comma-separated (ansible accepts both : and ,)
@@ -754,11 +763,11 @@ function LimitTester({ inventory, hostvars, selectedHost, onHostClick, limit, on
       <div className="px-4 py-3 border-b border-slate-800 flex items-center gap-2 shrink-0">
         <Filter size={14} className="text-amber-400" />
         <span className="text-amber-400 text-xs font-mono font-semibold uppercase tracking-widest flex-1">
-          --limit Tester
+          {t('inventoryLab.limitTester.title')}
         </span>
         {matchedSet && (
           <span className={`text-[10px] font-mono ${totalMatched === 0 ? 'text-red-400' : 'text-emerald-400'}`}>
-            {totalMatched} / {allHosts.length} host{allHosts.length !== 1 ? 's' : ''} matched
+            {t('inventoryLab.limitTester.matchedCount', { matched: totalMatched, total: allHosts.length, count: allHosts.length })}
           </span>
         )}
       </div>
@@ -767,7 +776,7 @@ function LimitTester({ inventory, hostvars, selectedHost, onHostClick, limit, on
         {/* Pattern input */}
         <div className="mb-4">
           <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1.5">
-            Limit Pattern
+            {t('inventoryLab.limitTester.limitPatternLabel')}
           </label>
           <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
             <code className="text-slate-600 text-[11px] font-mono shrink-0">--limit</code>
@@ -782,7 +791,7 @@ function LimitTester({ inventory, hostvars, selectedHost, onHostClick, limit, on
                 onClick={() => onLimitChange('')}
                 className="text-[10px] font-mono text-slate-500 hover:text-slate-300 transition-colors"
               >
-                clear
+                {t('inventoryLab.limitTester.clear')}
               </button>
             )}
           </div>
@@ -791,7 +800,7 @@ function LimitTester({ inventory, hostvars, selectedHost, onHostClick, limit, on
           {matchedSet && totalMatched === 0 && (
             <div className="mt-2 flex items-center gap-1.5 text-red-400 text-[11px] font-mono">
               <AlertTriangle size={11} />
-              No hosts match this pattern — the play would be skipped entirely.
+              {t('inventoryLab.limitTester.noHostsMatch')}
             </div>
           )}
         </div>
@@ -803,14 +812,14 @@ function LimitTester({ inventory, hostvars, selectedHost, onHostClick, limit, on
             className="w-full flex items-center gap-2 px-3 py-2 bg-slate-900 hover:bg-slate-800 transition-colors text-left"
           >
             <ChevronRight size={12} className={`text-slate-500 transition-transform ${showRef ? 'rotate-90' : ''}`} />
-            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Examples &amp; Pattern Syntax</span>
+            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{t('inventoryLab.limitTester.examplesAndSyntax')}</span>
           </button>
 
           {showRef && (
             <div className="px-3 pb-3 bg-slate-900/60 flex flex-col gap-3 pt-2">
               {/* Examples */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                {EXAMPLE_PATTERNS.map(({ pattern, desc }) => (
+                {EXAMPLE_PATTERNS.map(({ pattern, descKey }) => (
                   <button
                     key={pattern}
                     onClick={() => onLimitChange(pattern)}
@@ -821,19 +830,19 @@ function LimitTester({ inventory, hostvars, selectedHost, onHostClick, limit, on
                       }`}
                   >
                     <span>{pattern}</span>
-                    <span className="text-slate-600 text-[9px]">{desc}</span>
+                    <span className="text-slate-600 text-[9px]">{t(descKey)}</span>
                   </button>
                 ))}
               </div>
 
               {/* Syntax reference */}
               <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[10px] font-mono border-t border-slate-800 pt-2">
-                <code className="text-amber-300">group1:group2</code><span className="text-slate-400">union — hosts in either group</span>
-                <code className="text-amber-300">group1:&amp;group2</code><span className="text-slate-400">intersection — hosts in both groups</span>
-                <code className="text-amber-300">group1:!group2</code><span className="text-slate-400">difference — in group1 but not group2</span>
-                <code className="text-amber-300">web-0*</code><span className="text-slate-400">wildcard — fnmatch-style glob</span>
-                <code className="text-amber-300">all</code><span className="text-slate-400">every host in the inventory</span>
-                <code className="text-amber-300">host1,host2</code><span className="text-slate-400">comma-separated explicit hosts</span>
+                <code className="text-amber-300">group1:group2</code><span className="text-slate-400">{t('inventoryLab.limitTester.syntaxUnion')}</span>
+                <code className="text-amber-300">group1:&amp;group2</code><span className="text-slate-400">{t('inventoryLab.limitTester.syntaxIntersection')}</span>
+                <code className="text-amber-300">group1:!group2</code><span className="text-slate-400">{t('inventoryLab.limitTester.syntaxDifference')}</span>
+                <code className="text-amber-300">web-0*</code><span className="text-slate-400">{t('inventoryLab.limitTester.syntaxWildcard')}</span>
+                <code className="text-amber-300">all</code><span className="text-slate-400">{t('inventoryLab.limitTester.syntaxAll')}</span>
+                <code className="text-amber-300">host1,host2</code><span className="text-slate-400">{t('inventoryLab.limitTester.syntaxComma')}</span>
               </div>
             </div>
           )}
@@ -842,7 +851,7 @@ function LimitTester({ inventory, hostvars, selectedHost, onHostClick, limit, on
         {/* Per-group breakdown */}
         <div data-tour="limit-results">
         <div className="text-[10px] font-mono text-slate-600 uppercase tracking-wider mb-2">
-          Groups
+          {t('inventoryLab.limitTester.groupsHeader')}
         </div>
         {groupOrder.map((group) => (
           inventory[group] !== undefined && (

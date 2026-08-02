@@ -7,9 +7,11 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { ChevronDown, Search } from 'lucide-react'
 
 export default function Select({ icon: Icon, value, onChange, options, getLabel = (o) => o, getValue = (o) => o, placeholder }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
@@ -94,13 +96,13 @@ export default function Select({ icon: Icon, value, onChange, options, getLabel 
               value={query}
               onChange={(e) => { setQuery(e.target.value); setActiveIndex(0) }}
               onKeyDown={onInputKeyDown}
-              placeholder={`search ${options.length} option${options.length === 1 ? '' : 's'}…`}
+              placeholder={t('select.searchOptions', { count: options.length })}
               className="bg-transparent text-[11px] font-mono text-slate-200 outline-none w-full placeholder:text-slate-600"
             />
           </div>
           <div className="max-h-[260px] overflow-y-auto py-1">
             {filtered.length === 0 ? (
-              <p className="px-2.5 py-2 text-[11px] font-mono text-slate-600">No matches</p>
+              <p className="px-2.5 py-2 text-[11px] font-mono text-slate-600">{t('select.noMatches')}</p>
             ) : (
               filtered.map((o, i) => {
                 const v = getValue(o)

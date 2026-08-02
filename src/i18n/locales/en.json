@@ -1,0 +1,536 @@
+{
+  "common": {
+    "footerDisclaimer": "Ansible101 is an independent community tool — not affiliated with, endorsed by, or sponsored by Red Hat, Inc. Ansible® is a trademark of Red Hat, LLC, registered in the United States and other countries.",
+    "landingDisclaimer": "Ansible101 is an independent community tool and is not affiliated with, endorsed by, or sponsored by Red Hat, Inc. Ansible® is a trademark of Red Hat, LLC, registered in the United States and other countries."
+  },
+  "app": {
+    "loadingSession": "Loading session…",
+    "toolbar": {
+      "moreActions": "More actions",
+      "varsTitle": "Toggle Playbook Vars panel",
+      "vars": "Vars",
+      "factsTitle": "Toggle Mock Facts panel",
+      "facts": "Facts",
+      "about": "About",
+      "reset": "Reset",
+      "tourTitle": "Start walkthrough for this page",
+      "tour": "Tour",
+      "shareTitle": "Build a shareable link",
+      "share": "Share",
+      "copied": "Copied!",
+      "shareTooLarge": "Too large to share",
+      "sharingNote": "Your work auto-saves in this browser. Share builds a link with the data encoded in the URL hash — no server upload. Very large projects can't fit in a link.",
+      "sharingNoteAria": "Sharing privacy note"
+    },
+    "editor": {
+      "dropFiles": "Drop files or ZIP",
+      "dropFilesHint": "YAML · scripts · any text file",
+      "paneJinja2": "Jinja2 Expression",
+      "paneSnippet": "Task Snippet",
+      "panePlaybook": "Playbook YAML",
+      "resizeEditorFlow": "Resize editor and flow panels",
+      "resizeFlowSidebar": "Resize flow and sidebar panels"
+    },
+    "tabs": {
+      "flow": "Execution Flow",
+      "resolve": "Variable Resolver",
+      "projectDetected": "Project detected"
+    },
+    "emptyFlow": {
+      "syntaxError": "YAML Syntax Error",
+      "lineColumn": "Line {{line}}, Column {{column}}",
+      "fixHint": "Fix the error in the editor to see the flow",
+      "placeholder": "Write a valid Ansible playbook to see the flow."
+    },
+    "emptyQuickCard": {
+      "title": "Task Snippet decoder",
+      "hintPart1": "Paste a single Ansible task — a",
+      "hintPart2": "block with a module — to see its module, arguments, a plain-English explanation, and live rendering of any",
+      "hintPart3": "values.",
+      "loadExample": "Load example task"
+    },
+    "landing": {
+      "tagline": "Visual debugger, logic explainer and Jinja2 sandbox for Ansible playbooks.",
+      "readingFiles": "Reading project files…",
+      "pressBefore": "Press",
+      "pressAfter": "to paste",
+      "dragDropHint": "or drag & drop your YAML, task snippet, project folder, or .zip",
+      "noReadableFiles": "No readable files found — check the archive isn't corrupt or empty.",
+      "couldntRead": "Couldn't read that drop: {{message}}",
+      "or": "or",
+      "loadSample": "Load sample playbook",
+      "openLimits": "Open Limits Lab",
+      "loadDemoInventory": "Load demo inventory into Limits",
+      "startTour": "Start guided walkthrough",
+      "aboutLegal": "About / Legal"
+    }
+  },
+  "humanSidebar": {
+    "header": "Human Logic",
+    "hostMismatch": {
+      "title": "Host \"{{host}}\" isn't targeted by any play",
+      "detail": "None of this playbook's plays match the selected host's groups — in real Ansible this play would never run against it. Variable values below are shown as a best-effort fallback (play/role vars, not host-specific group_vars/host_vars); switch the host or inventory in the Variable Resolver tab to verify for real."
+    },
+    "playPrefix": "Play:",
+    "playFallback": "Play {{number}}",
+    "selectedTask": "Selected Task",
+    "allTasks": "All Tasks",
+    "emptyState": "Write or paste an Ansible playbook in the editor to see explanations here.",
+    "condition": "Condition:",
+    "loopCountPrefix": "Loops over {{count}} item(s) as",
+    "loopDynamicPrefix": "Loops over a dynamically-resolved list as",
+    "loopDynamicSuffix": "— can't preview items statically.",
+    "loopMore": "+{{count}} more",
+    "notifies": "Notifies:",
+    "alsoReferenced": "Also referenced",
+    "notSetYet": "not set yet at this point",
+    "neverResolves": "never resolves for this host",
+    "neverResolvesTitle": "No source (role defaults, group/host vars, play vars, set_fact, etc.) defines this for the selected host",
+    "ansibleDocs": "ansible docs",
+    "missingFile": {
+      "circularTitle": "Circular Include",
+      "deepTitle": "Deeply Nested Include",
+      "circularBody": "This file is already part of the include chain above it, so expanding it again here would loop forever.",
+      "deepBody": "This include chain is nested very deep, so expansion stopped here to keep the diagram from running away.",
+      "alreadyInWorkspace": "The file itself is already in your workspace — it's just not redrawn inline:",
+      "referencedFrom": "Referenced from",
+      "dynamicTitle": "Dynamic Include",
+      "dynamicBody1": "This target is computed from a Jinja2 expression",
+      "dynamicIn": "in",
+      "dynamicBody2": ", so it depends on runtime facts/variables and can't be resolved statically:",
+      "dynamicHint": "Add the actual file(s) it could resolve to (e.g. one per OS family) so each can be expanded individually.",
+      "unresolvedTitle": "Unresolved Include",
+      "unresolvedBody": "This task includes an external file that hasn't been added to the workspace yet",
+      "unresolvedBodyRef": "(referenced from",
+      "toExpand": "To expand this node:",
+      "step1Before": "Click",
+      "step1After": "above the editor",
+      "step2": "Double-click the new tab and rename it to exactly:",
+      "step3": "Then paste your task list into that file's editor."
+    },
+    "include": {
+      "title": "Included File",
+      "bodyBefore": "Tasks are being loaded from",
+      "bodyAfter": ". The nodes below this card show the expanded contents."
+    }
+  },
+  "mockContext": {
+    "title": "Mock Facts",
+    "resetTitle": "Reset to defaults",
+    "reset": "Reset"
+  },
+  "playVars": {
+    "title": "Playbook Vars",
+    "detected": "({{count}} detected)",
+    "resetTitle": "Reset to playbook defaults",
+    "reset": "Reset",
+    "definedInPlay": "Defined in play vars",
+    "referencedNotDefined": "Referenced but not defined in vars",
+    "playBadge": "play",
+    "valuePlaceholder": "value…"
+  },
+  "quickCard": {
+    "title": "Quick Card",
+    "cmdOrValue": "cmd / value",
+    "value": "value",
+    "taskName": "Task Name",
+    "module": "Module",
+    "arguments": "Arguments",
+    "condition": "Condition",
+    "loopItems": "Loop Items",
+    "notifiesHandler": "Notifies Handler",
+    "resultStoredIn": "Result stored in variable:"
+  },
+  "pipeline": {
+    "input": "Input",
+    "filter": "Filter",
+    "finalOutput": "Final Output",
+    "intermediateValue": "Intermediate Value",
+    "pasteHint": "Paste a Jinja2 expression like",
+    "couldNotParse": "Could not parse the expression.",
+    "title": "Transformation Trace",
+    "stepCount_one": "{{count}} step",
+    "stepCount_other": "{{count}} steps",
+    "finalLabel": "Final:"
+  },
+  "fileExplorer": {
+    "filesLabel": "files",
+    "newFile": "New file",
+    "newFileHere": "New file here",
+    "newFolder": "New folder",
+    "newFolderHere": "New folder here",
+    "newFileBottom": "new file",
+    "newFolderBottom": "new folder",
+    "rename": "Rename",
+    "remove": "Remove",
+    "delete": "Delete",
+    "addFile": "Add file",
+    "ignore": "Ignore",
+    "ignoreAllMissing": "Ignore all missing",
+    "showIgnoredAgain": "Show ignored missing references again",
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "yamlError": "YAML error",
+    "clickForDetails": "Click for details and options",
+    "invalidPath": "Invalid path",
+    "nameExists": "A file with that name already exists",
+    "missingRef": {
+      "inFile": " (in {{file}})",
+      "roleUsedIn": "Role used in play \"{{play}}\"{{from}}. Ansible would look for it at roles/{{role}}/tasks/main.yml.",
+      "referencedViaTask": "Referenced via {{kind}} in task \"{{task}}\"{{from}}.",
+      "referencedVia": "Referenced via {{kind}}{{from}}.",
+      "notFound": "Referenced by the playbook but not found in this project."
+    }
+  },
+  "fileTabBar": {
+    "addFileTitle": "Add a file — name it to match an include_tasks or roles/name/tasks/main.yml reference",
+    "addFile": "add file",
+    "removeFile": "Remove file"
+  },
+  "importControls": {
+    "chooseFolder": "Choose folder",
+    "chooseZip": "Choose .zip",
+    "noFilesInFolder": "No readable files found in that folder.",
+    "couldntReadFolder": "Couldn't read that folder: {{message}}",
+    "noFilesInZip": "No readable files found — check the archive isn't corrupt or empty.",
+    "couldntReadZip": "Couldn't read that zip: {{message}}"
+  },
+  "resolveView": {
+    "readingFiles": "Reading project files…",
+    "dropProjectFolder": "Drop an Ansible project folder",
+    "dropProjectHint": "inventory · group_vars/ · host_vars/ · roles/ · vendored collections — structure is preserved so every variable resolves through Ansible precedence.",
+    "orDropAnywhere": "…or drop a folder / .zip anywhere here",
+    "noInventoryPrefix": "No inventory in this project — resolving against a synthetic",
+    "noInventoryMid": "derived from the playbook's",
+    "noInventorySuffix": ". Add an inventory (drop a folder, or add an",
+    "noInventoryEnd": "file) to resolve real group_vars / host_vars.",
+    "wantTestSingle": "Just want to test a single inventory file?",
+    "syntheticInventory": "synthetic inventory",
+    "noHosts": "no hosts",
+    "useInFlowTitle": "Load this host's resolved vars into the Flow view",
+    "useInFlow": "Use in Flow",
+    "useInJinja2Title": "Load this host's resolved vars into the Jinja2 sandbox",
+    "groupsLabel": "groups:",
+    "allOnly": "all only",
+    "playsLabel": "plays:",
+    "searchPlaceholder": "search variable names…",
+    "referencedOnly": "referenced only",
+    "showFacts": "show facts",
+    "variableCount_one": "{{count}} variable",
+    "variableCount_other": "{{count}} variables",
+    "noHostsInInventory": "No hosts in this inventory.",
+    "noVariablesMatch": "No variables match.",
+    "tryTurningOffReferenced": "Try turning off \"referenced only\".",
+    "columnVariable": "Variable",
+    "columnValue": "Value",
+    "columnWinningSource": "Winning source",
+    "shadowedValues_one": "{{count}} shadowed value",
+    "shadowedValues_other": "{{count}} shadowed values",
+    "selectVariableHint": "Select a variable to see its precedence stack.",
+    "closePrecedenceStack": "Close precedence stack",
+    "close": "Close",
+    "precedenceStackHeader_one": "precedence stack — {{count}} candidate (winner on top)",
+    "precedenceStackHeader_other": "precedence stack — {{count}} candidates (winner on top)",
+    "officialDocsTitle": "Official Ansible docs: variable precedence order",
+    "wins": "wins"
+  },
+  "extraVars": {
+    "title": "Extra Vars (-e)",
+    "alwaysWinsCount": "always wins · {{count}} set",
+    "remove": "Remove",
+    "selectVarsFile": "select a vars file…",
+    "add": "add",
+    "keyPlaceholder": "key",
+    "valuePlaceholder": "value",
+    "addPair": "add pair"
+  },
+  "runtimeMocks": {
+    "title": "Runtime Vars",
+    "detected": "({{count}} detected — values only known at runtime)",
+    "mockValuePlaceholder": "mock value…"
+  },
+  "inventoryLab": {
+    "importModal": {
+      "title": "Import Inventory",
+      "detected": "Detected",
+      "inventoryWith": "inventory with",
+      "and": "and",
+      "groupCount_one": "{{count}} group",
+      "groupCount_other": "{{count}} groups",
+      "hostCount_one": "{{count}} unique host",
+      "hostCount_other": "{{count}} unique hosts",
+      "whatToDo": "What would you like to do with your existing inventory?",
+      "replace": "Replace",
+      "append": "Append",
+      "cancel": "Cancel"
+    },
+    "groupRow": {
+      "removeGroup": "Remove group",
+      "noHosts": "no hosts",
+      "hostnamePlaceholder": "hostname…",
+      "add": "add",
+      "hostCount_one": "{{count}} host",
+      "hostCount_other": "{{count}} hosts"
+    },
+    "editor": {
+      "dropInventoryFile": "Drop inventory file",
+      "title": "Inventory",
+      "hostCount_one": "{{count}} host",
+      "hostCount_other": "{{count}} hosts",
+      "useInPlaybookTitle": "Add this inventory to the Playbook project so it resolves real group_vars/host_vars",
+      "useInPlaybook": "Use in Playbook",
+      "uploadTitle": "Upload inventory file",
+      "import": "Import",
+      "reset": "Reset",
+      "exportFrom": "Export from Ansible:",
+      "copyCommandTitle": "Copy command",
+      "copied": "Copied",
+      "copy": "Copy",
+      "thenPart": "Then",
+      "pastePart": "paste ·",
+      "dragPart": "drag & drop · or click Import — supports JSON, INI & YAML",
+      "couldNotParse": "Could not parse inventory.",
+      "newGroupPlaceholder": "new group name…",
+      "addGroup": "Add Group"
+    },
+    "hostDetail": {
+      "closeTitle": "Close (Esc)",
+      "memberOf": "Member of",
+      "noGroups": "no groups",
+      "addToLimitTitle": "Add \"{{group}}\" to limit filter",
+      "hostVariables": "Host Variables",
+      "noVariablesPrefix": "No variables — import a JSON inventory to see",
+      "copyValueTitle": "Copy value",
+      "closeHostDetails": "Close host details"
+    },
+    "limitInput": {
+      "placeholder": "e.g. web:&production  or  web-0*  or  all:!staging"
+    },
+    "limitTester": {
+      "clickToViewAttrs": "Click to view host attributes",
+      "title": "--limit Tester",
+      "matchedCount_one": "{{matched}} / {{total}} host matched",
+      "matchedCount_other": "{{matched}} / {{total}} hosts matched",
+      "limitPatternLabel": "Limit Pattern",
+      "clear": "clear",
+      "noHostsMatch": "No hosts match this pattern — the play would be skipped entirely.",
+      "examplesAndSyntax": "Examples & Pattern Syntax",
+      "syntaxUnion": "union — hosts in either group",
+      "syntaxIntersection": "intersection — hosts in both groups",
+      "syntaxDifference": "difference — in group1 but not group2",
+      "syntaxWildcard": "wildcard — fnmatch-style glob",
+      "syntaxAll": "every host in the inventory",
+      "syntaxComma": "comma-separated explicit hosts",
+      "groupsHeader": "Groups",
+      "empty": "empty",
+      "groupMatched": "{{matched}}/{{total}} matched",
+      "examples": {
+        "singleGroup": "single group",
+        "union": "union",
+        "intersection": "intersection",
+        "excludeGroup": "exclude group",
+        "wildcard": "wildcard",
+        "commaList": "comma list"
+      }
+    }
+  },
+  "limitPanel": {
+    "playFallback": "Play",
+    "hostsLabel": "hosts:",
+    "skipped": "skipped",
+    "matchedCount_one": "{{matched}} / {{total}} host",
+    "matchedCount_other": "{{matched}} / {{total}} hosts",
+    "noHostsInInventory": "No hosts in inventory — add some in Mock Facts → groups",
+    "noHostsMatchPattern": "No hosts match the play pattern \"{{pattern}}\"",
+    "title": "--limit Tester",
+    "hostCountInInventory_one": "({{count}} host in inventory)",
+    "hostCountInInventory_other": "({{count}} hosts in inventory)",
+    "limitPlaceholder": "e.g. web_servers:!web-02  or  web*  or  all",
+    "cheatWildcard": "wildcard",
+    "cheatUnion": "union",
+    "cheatIntersect": "intersect",
+    "cheatExclude": "exclude"
+  },
+  "select": {
+    "searchOptions_one": "search {{count}} option…",
+    "searchOptions_other": "search {{count}} options…",
+    "noMatches": "No matches"
+  },
+  "flowNodes": {
+    "play": "Play",
+    "hostsLabel": "hosts:",
+    "nonIdempotent": "Non-idempotent",
+    "skip": "skip",
+    "end": "End",
+    "taskCount_one": "{{count}} task",
+    "taskCount_other": "{{count}} tasks",
+    "missingFile": {
+      "circular": "circular include — already expanded above",
+      "tooDeep": "nested too deep to expand further — file is in your workspace",
+      "dynamic": "computed at runtime — can't resolve statically",
+      "notInWorkspace": "file not in workspace — add to expand"
+    }
+  },
+  "flowCanvas": {
+    "exportDiagram": "Export diagram",
+    "export": "Export"
+  },
+  "about": {
+    "badge": "About / Legal",
+    "heading": "Independent Ansible® Learning Tool",
+    "intro": "Ansible101 is an independent, browser-based site for tutorials, reviews, visual explanations, debugging walkthroughs, and safe experimentation with Ansible playbooks and Jinja expressions. The project is intended to help learners and practitioners understand automation logic more quickly by turning YAML into visual flows and plain-English explanations.",
+    "purpose": {
+      "title": "Purpose",
+      "body": "Tutorials, reviews, playbook breakdowns, and hands-on exploration of Ansible logic without needing a remote host or a running control node."
+    },
+    "independence": {
+      "title": "Independence",
+      "body": "This site is community-built and is not an official documentation portal, support channel, training product, or certification service."
+    },
+    "trademark": {
+      "title": "Trademark Notice",
+      "body": "Ansible101 is not affiliated with, endorsed by, or sponsored by Red Hat, Inc. Ansible® is a trademark of Red Hat, LLC, registered in the United States and other countries."
+    },
+    "legalSummary": {
+      "title": "Legal Summary",
+      "para1": "Ansible101 exists to provide independent commentary, education, review, and experimentation tooling around Ansible concepts. References to Ansible modules, playbooks, terminology, or trademarks are used solely to describe compatibility, explain workflows, and support learning.",
+      "para2": "Nothing on this site should be interpreted as official Red Hat guidance, product support, certification material, or vendor-authorized training. Users should refer to official vendor documentation for authoritative product behavior, licensing, support terms, and trademark policy."
+    },
+    "needOfficialDocs": "Need official docs?"
+  },
+  "tour": {
+    "common": {
+      "next": "Next →",
+      "prev": "← Back",
+      "done": "Done"
+    },
+    "playbook": {
+      "modeTabs": {
+        "title": "Mode Switcher",
+        "description": "Switch between <b>Playbook</b>, <b>Snippet</b>, <b>Jinja2</b>, and <b>Limits</b> views. Each mode is independent - your content is preserved when you switch."
+      },
+      "editorPane": {
+        "title": "YAML Editor",
+        "description": "Paste or type your Ansible playbook here. The editor gives you syntax highlighting, error squiggles, and line-level highlighting when you click a flow node."
+      },
+      "fileExplorer": {
+        "title": "File Explorer",
+        "description": "Add extra task files (<code>include_tasks</code>, role files, scripts) as tabs here. Drag tabs to reorder. The flow resolves cross-file task references automatically."
+      },
+      "flowPane": {
+        "title": "Execution Flow",
+        "description": "A live graph of every play, task and handler in the playbook. <b>Click any node</b> to jump to it in the editor and see a plain-English explanation on the right."
+      },
+      "humanSidebar": {
+        "title": "Human Explanation",
+        "description": "Explains the selected task or play in plain English - what module is used, what it does, and any conditions or loops applied."
+      },
+      "btnVars": {
+        "title": "Playbook Vars",
+        "description": "Override <code>vars</code> and <code>vars_files</code> values defined in the playbook. Useful for testing different variable combinations without editing the YAML."
+      },
+      "btnFacts": {
+        "title": "Mock Ansible Facts",
+        "description": "Simulate <code>ansible_facts</code> - the host variables Ansible collects at runtime. The flow and Jinja2 renderer use these to evaluate <code>when</code> conditions and variable expressions."
+      },
+      "viewTabs": {
+        "title": "Variable Resolver",
+        "description": "This tab answers a classic Ansible question: \"I set this variable in 3 places - which one actually wins?\" Switching you there now."
+      },
+      "resolverPickers": {
+        "title": "Pick What You're Resolving",
+        "description": "Two dropdowns: which <b>inventory</b> and which <b>host</b>. Variables can resolve differently for every host - change either and the table updates instantly. (To resolve a different playbook, switch the active playbook in the toolbar above.)"
+      },
+      "resolverActions": {
+        "title": "Send Vars Elsewhere",
+        "description": "Found a value worth testing somewhere else? <b>Use in Flow</b> loads this host's resolved variables into the Execution Flow tab. <b>Jinja2</b> loads them into the Jinja2 sandbox."
+      },
+      "resolverGroups": {
+        "title": "Group Membership",
+        "description": "Every inventory <b>group</b> this host belongs to, and every <b>play</b> that targets it. This matters because <code>group_vars</code> only apply to hosts actually <i>in</i> that group."
+      },
+      "resolverFilters": {
+        "title": "Narrow the List",
+        "description": "<b>Filter</b> searches by name. <b>Referenced only</b> hides variables your playbook never actually uses. <b>Show facts</b> reveals Ansible's built-in <code>ansible_*</code> facts (hidden by default - there are a lot of them)."
+      },
+      "resolverExtravars": {
+        "title": "Extra Vars (-e)",
+        "description": "Simulates running <code>ansible-playbook -e ...</code>. Pick a vars file, or type <code>key=value</code> pairs.<br><br>These <b>always win</b> over every other source - that's precedence level <code>L22</code>, the highest there is."
+      },
+      "resolverMocks": {
+        "title": "Mock Runtime Values",
+        "description": "Some variables only exist while a playbook is actually running - facts, <code>register</code> results, role params. Give them a test value here so the table (and Jinja2 expressions) resolve instead of showing \"undefined\"."
+      },
+      "resolverTable": {
+        "title": "The \"L\" Badges = Priority Ranking",
+        "description": "Every variable gets a badge like <code>L11</code> or <code>L12</code>. Think of it as a <b>priority ranking from 1 to 22</b> - <code>L1</code> is the weakest source, <code>L22</code> is the strongest.<br><br><b>Bigger number always wins</b> - no matter where it appears in your files. That's why <code>L12</code> (play <code>vars:</code>) beats <code>L11</code> (host facts) here, even though facts are usually \"more specific.\"<br><br>Hover any badge to see its full name. Click a row to see <i>every</i> place that variable was set, ranked."
+      },
+      "resolverStack": {
+        "title": "See Every Place It Was Set",
+        "description": "Clicking a row opens this panel - it lists <b>every</b> place that variable was defined, not just the winner, ranked by precedence. (Selected one for you below.)<br><br>The <span style=\"color:#34d399\">green</span> entry on top won. Greyed-out entries below were <i>shadowed</i> - they were set, but a higher level overrode them. The small <span>↗</span> icon links to Ansible's official precedence docs."
+      },
+      "btnShare": {
+        "title": "Share",
+        "description": "Copies a URL to your clipboard that encodes the current playbook and extra files. Anyone with the link opens exactly what you see."
+      }
+    },
+    "snippet": {
+      "modeTabs": {
+        "title": "Snippet Mode",
+        "description": "Paste a <b>single Ansible task</b> here to get an instant visual breakdown - no full playbook needed."
+      },
+      "editorPane": {
+        "title": "Task YAML",
+        "description": "Paste one task in YAML format. For example: <pre>- name: Install nginx\n  apt:\n    name: nginx\n    state: present</pre>The card updates as you type."
+      },
+      "snippetPane": {
+        "title": "Quick Card",
+        "description": "A visual breakdown of the task: the module used, each parameter, any <code>when</code> conditions, loops, and tags - all explained in plain English."
+      },
+      "btnFacts": {
+        "title": "Mock Facts",
+        "description": "Provide mock facts to evaluate <code>when</code> conditions and Jinja2 expressions inside the task."
+      }
+    },
+    "jinja2": {
+      "modeTabs": {
+        "title": "Jinja2 Mode",
+        "description": "A sandbox for Ansible's <b>Jinja2 templating engine</b>. Paste any expression to trace how it evaluates step by step."
+      },
+      "editorPane": {
+        "title": "Jinja2 Expression",
+        "description": "Enter any Jinja2 template - variable lookups, filters, conditionals, loops. Example: <code>{{ inventory_hostname | upper }}</code>"
+      },
+      "jinja2Pane": {
+        "title": "Pipeline View",
+        "description": "Shows each step in the evaluation pipeline: variable substitution → filters applied → final output. Hover a step to see the intermediate value."
+      },
+      "btnFacts": {
+        "title": "Mock Facts",
+        "description": "Define the variables the Jinja2 expression can reference. Add your own hostnames, IPs, custom variables - anything the template expects."
+      }
+    },
+    "limits": {
+      "modeTabs": {
+        "title": "Limits Mode",
+        "description": "A sandbox for testing Ansible's <code>--limit</code> flag. Build an inventory, write a pattern, and instantly see which hosts match."
+      },
+      "inventoryEditor": {
+        "title": "Inventory Editor",
+        "description": "Define your inventory visually - add groups, add hosts to groups, or import a real inventory file (JSON from <code>ansible-inventory --list</code>, INI, or YAML)."
+      },
+      "inventoryImport": {
+        "title": "Import Inventory",
+        "description": "Click <b>Import</b> or <b>paste / drag-and-drop</b> an inventory file directly onto this panel. Supports <code>ansible-inventory --list</code> JSON, classic INI, and YAML formats."
+      },
+      "limitInput": {
+        "title": "Limit Pattern",
+        "description": "Type an Ansible <code>--limit</code> pattern. Examples: <code>web:db</code> (union), <code>web:&amp;production</code> (intersection), <code>all:!staging</code> (exclusion), <code>web-0*</code> (wildcard). Autocomplete suggests groups and hosts as you type."
+      },
+      "limitResults": {
+        "title": "Match Results",
+        "description": "Every group is shown with its hosts. <b>Matched hosts</b> are highlighted in green, <b>excluded hosts</b> are dimmed. Click any host to open its detail panel."
+      }
+    }
+  }
+}

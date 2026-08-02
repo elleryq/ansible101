@@ -5,6 +5,7 @@
  * the rendered output.
  */
 import React, { useMemo, useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Variable, RefreshCw, ChevronDown, ChevronRight } from 'lucide-react'
 
 // Identifiers that are Ansible internals — never shown as user vars
@@ -47,6 +48,7 @@ export function extractJinja2Vars(yamlText) {
 }
 
 export default function PlayVarsPanel({ yamlText, plays, userVars, onUserVarsChange }) {
+  const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(true)
 
   // All variable names found in the YAML that aren't ansible internals
@@ -92,20 +94,20 @@ export default function PlayVarsPanel({ yamlText, plays, userVars, onUserVarsCha
         >
           {collapsed ? <ChevronRight size={13} /> : <ChevronDown size={13} />}
           <Variable size={13} />
-          Playbook Vars
+          {t('playVars.title')}
           <span className="ml-1 text-slate-500 normal-case font-normal tracking-normal">
-            ({detectedVars.length} detected)
+            {t('playVars.detected', { count: detectedVars.length })}
           </span>
         </button>
 
         {!collapsed && (
           <button
             onClick={handleReset}
-            title="Reset to playbook defaults"
+            title={t('playVars.resetTitle')}
             className="inline-flex items-center justify-center gap-1 rounded border border-slate-700 px-2 py-2 min-h-[40px] text-[10px] font-mono text-slate-500 transition-all hover:border-slate-500 hover:text-slate-300 sm:ml-auto sm:min-h-0 sm:py-1"
           >
             <RefreshCw size={10} />
-            Reset
+            {t('playVars.reset')}
           </button>
         )}
       </div>
@@ -119,20 +121,20 @@ export default function PlayVarsPanel({ yamlText, plays, userVars, onUserVarsCha
                 <label
                   htmlFor={`pv-${name}`}
                   className="text-[11px] font-mono text-slate-400 md:whitespace-nowrap"
-                  title={fromPlay ? 'Defined in play vars' : 'Referenced but not defined in vars'}
+                  title={fromPlay ? t('playVars.definedInPlay') : t('playVars.referencedNotDefined')}
                 >
                   <span className={fromPlay ? 'text-violet-300' : 'text-slate-400'}>
                     {name}
                   </span>
                   {fromPlay && (
-                    <span className="ml-1 text-[9px] text-violet-600">play</span>
+                    <span className="ml-1 text-[9px] text-violet-600">{t('playVars.playBadge')}</span>
                   )}
                 </label>
                 <input
                   id={`pv-${name}`}
                   type="text"
                   value={getValue(name)}
-                  placeholder={fromPlay ? playVarsDefaults[name] : 'value…'}
+                  placeholder={fromPlay ? playVarsDefaults[name] : t('playVars.valuePlaceholder')}
                   onChange={(e) => handleChange(name, e.target.value)}
                   className="w-full bg-slate-900 border border-slate-700 focus:border-violet-600
                     rounded px-2 py-2 min-h-[40px] text-[11px] font-mono text-slate-200

@@ -13,12 +13,14 @@
     "@zip.js/zip.js": "^2.8.26",
     "driver.js": "^1.4.0",
     "fflate": "^0.8.2",
+    "i18next": "^26.3.6",
     "js-yaml": "^4.1.0",
     "lucide-react": "^0.468.0",
     "lz-string": "^1.5.0",
     "nunjucks": "^3.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-i18next": "^17.0.11",
     "reactflow": "^11.11.4"
   },
   "devDependencies": {

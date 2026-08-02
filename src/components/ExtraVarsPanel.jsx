@@ -7,11 +7,13 @@
  */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Terminal, Plus, X, ChevronDown, ChevronRight, FileText } from 'lucide-react'
 
 export default function ExtraVarsPanel({
   candidateFiles = [], picked = [], onTogglePick, pairs = [], onPairsChange, defaultCollapsed = false,
 }) {
+  const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
   const [fileToAdd, setFileToAdd] = useState('')
 
@@ -29,9 +31,9 @@ export default function ExtraVarsPanel({
       >
         {collapsed ? <ChevronRight size={13} /> : <ChevronDown size={13} />}
         <Terminal size={13} />
-        Extra Vars (-e)
+        {t('extraVars.title')}
         <span className="ml-1 normal-case font-normal tracking-normal text-slate-500">
-          always wins · {picked.length + pairs.filter((p) => p.key).length} set
+          {t('extraVars.alwaysWinsCount', { count: picked.length + pairs.filter((p) => p.key).length })}
         </span>
       </button>
 
@@ -45,7 +47,7 @@ export default function ExtraVarsPanel({
                 <div key={f} className="flex items-center gap-2 rounded bg-slate-900 border border-slate-800 px-2 py-1">
                   <FileText size={11} className="text-rose-300 shrink-0" />
                   <span className="flex-1 min-w-0 truncate text-[11px] font-mono text-slate-300" title={f}>{f}</span>
-                  <button onClick={() => onTogglePick(f)} className="text-slate-600 hover:text-rose-400" title="Remove">
+                  <button onClick={() => onTogglePick(f)} className="text-slate-600 hover:text-rose-400" title={t('extraVars.remove')}>
                     <X size={11} />
                   </button>
                 </div>
@@ -57,7 +59,7 @@ export default function ExtraVarsPanel({
                     onChange={(e) => setFileToAdd(e.target.value)}
                     className="flex-1 min-w-0 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] font-mono text-slate-300 outline-none focus:border-rose-600"
                   >
-                    <option value="">select a vars file…</option>
+                    <option value="">{t('extraVars.selectVarsFile')}</option>
                     {available.map((f) => <option key={f} value={f}>{f}</option>)}
                   </select>
                   <button
@@ -65,7 +67,7 @@ export default function ExtraVarsPanel({
                     disabled={!fileToAdd}
                     className="flex items-center gap-1 px-2 py-1 rounded border border-slate-700 text-[10px] font-mono text-slate-400 hover:text-rose-300 hover:border-rose-700 disabled:opacity-30 transition-all"
                   >
-                    <Plus size={10} /> add
+                    <Plus size={10} /> {t('extraVars.add')}
                   </button>
                 </div>
               )}
@@ -81,17 +83,17 @@ export default function ExtraVarsPanel({
                   <input
                     value={p.key}
                     onChange={(e) => updatePair(i, { key: e.target.value })}
-                    placeholder="key"
+                    placeholder={t('extraVars.keyPlaceholder')}
                     className="w-1/3 min-w-0 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] font-mono text-slate-200 outline-none focus:border-rose-600 placeholder:text-slate-600"
                   />
                   <span className="text-slate-600 text-[11px] font-mono">=</span>
                   <input
                     value={p.value}
                     onChange={(e) => updatePair(i, { value: e.target.value })}
-                    placeholder="value"
+                    placeholder={t('extraVars.valuePlaceholder')}
                     className="flex-1 min-w-0 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] font-mono text-slate-200 outline-none focus:border-rose-600 placeholder:text-slate-600"
                   />
-                  <button onClick={() => removePair(i)} className="text-slate-600 hover:text-rose-400 shrink-0" title="Remove">
+                  <button onClick={() => removePair(i)} className="text-slate-600 hover:text-rose-400 shrink-0" title={t('extraVars.remove')}>
                     <X size={11} />
                   </button>
                 </div>
@@ -100,7 +102,7 @@ export default function ExtraVarsPanel({
                 onClick={addPair}
                 className="self-start flex items-center gap-1 px-2 py-1 rounded border border-slate-700 text-[10px] font-mono text-slate-400 hover:text-rose-300 hover:border-rose-700 transition-all"
               >
-                <Plus size={10} /> add pair
+                <Plus size={10} /> {t('extraVars.addPair')}
               </button>
             </div>
           </div>

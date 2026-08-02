@@ -1,8 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { BookOpen, Scale, ShieldCheck, ExternalLink } from 'lucide-react'
 
 export default function AboutPage({ onNavigateHome }) {
+  const { t } = useTranslation()
   return (
     <div className="h-screen md:h-[100dvh] overflow-y-auto bg-slate-950 text-white">
       <header className="border-b border-slate-800 bg-slate-950">
@@ -17,7 +19,7 @@ export default function AboutPage({ onNavigateHome }) {
             </span>
           </button>
           <span className="rounded-full border border-slate-800 bg-slate-900 px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-slate-400">
-            About / Legal
+            {t('about.badge')}
           </span>
         </div>
       </header>
@@ -27,58 +29,48 @@ export default function AboutPage({ onNavigateHome }) {
           <div className="mb-3 flex items-center gap-3 text-cyan-400">
             <Scale size={18} />
             <h1 className="font-mono text-2xl font-bold tracking-tight text-white">
-              Independent Ansible® Learning Tool
+              {t('about.heading')}
             </h1>
           </div>
           <p className="text-sm leading-7 text-slate-300">
-            Ansible101 is an independent, browser-based site for tutorials, reviews,
-            visual explanations, debugging walkthroughs, and safe experimentation with
-            Ansible playbooks and Jinja expressions. The project is intended to help
-            learners and practitioners understand automation logic more quickly by
-            turning YAML into visual flows and plain-English explanations.
+            {t('about.intro')}
           </p>
         </section>
 
         <section className="grid gap-4 md:grid-cols-3">
           <InfoCard
             icon={BookOpen}
-            title="Purpose"
-            body="Tutorials, reviews, playbook breakdowns, and hands-on exploration of Ansible logic without needing a remote host or a running control node."
+            title={t('about.purpose.title')}
+            body={t('about.purpose.body')}
           />
           <InfoCard
             icon={ShieldCheck}
-            title="Independence"
-            body="This site is community-built and is not an official documentation portal, support channel, training product, or certification service."
+            title={t('about.independence.title')}
+            body={t('about.independence.body')}
           />
           <InfoCard
             icon={Scale}
-            title="Trademark Notice"
-            body="Ansible101 is not affiliated with, endorsed by, or sponsored by Red Hat, Inc. Ansible® is a trademark of Red Hat, LLC, registered in the United States and other countries."
+            title={t('about.trademark.title')}
+            body={t('about.trademark.body')}
           />
         </section>
 
         <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
           <h2 className="mb-3 font-mono text-sm font-semibold uppercase tracking-widest text-cyan-400">
-            Legal Summary
+            {t('about.legalSummary.title')}
           </h2>
           <div className="space-y-3 text-sm leading-7 text-slate-300">
             <p>
-              Ansible101 exists to provide independent commentary, education, review,
-              and experimentation tooling around Ansible concepts. References to
-              Ansible modules, playbooks, terminology, or trademarks are used solely
-              to describe compatibility, explain workflows, and support learning.
+              {t('about.legalSummary.para1')}
             </p>
             <p>
-              Nothing on this site should be interpreted as official Red Hat guidance,
-              product support, certification material, or vendor-authorized training.
-              Users should refer to official vendor documentation for authoritative
-              product behavior, licensing, support terms, and trademark policy.
+              {t('about.legalSummary.para2')}
             </p>
           </div>
         </section>
 
         <section className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
-          <span className="font-mono">Need official docs?</span>
+          <span className="font-mono">{t('about.needOfficialDocs')}</span>
           <a
             href="https://docs.ansible.com/"
             target="_blank"

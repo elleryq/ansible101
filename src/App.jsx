@@ -13,6 +13,8 @@ import React, {
   useState, useCallback, useEffect, useMemo, useRef, Suspense, lazy,
 } from 'react'
 import yaml from 'js-yaml'
+import { useTranslation } from 'react-i18next'
+import { setLanguage } from './i18n'
 import { parsePlaybook } from './lib/parseYamlToFlow'
 import { persistState, buildShareUrl, loadFromUrl, loadFallbackFromIndexedDb } from './lib/shareUrl'
 import { toMermaidFlow, toPlantUmlFlow } from './lib/exportFlowText'
@@ -172,17 +174,42 @@ const MODE_META = {
 // being recovered from IndexedDB (see the `checkingSession` effect) — avoids
 // flashing the sample playbook right before replacing it.
 function SessionLoadingSkeleton() {
+  const { t } = useTranslation()
   return (
     <div className="h-screen w-screen flex items-center justify-center bg-slate-950">
       <div className="flex items-center gap-2 text-slate-500 text-xs font-mono">
         <Loader2 size={14} className="animate-spin text-cyan-500" />
-        Loading session…
+        {t('app.loadingSession')}
       </div>
     </div>
   )
 }
 
+function LanguageSwitcher() {
+  const { i18n } = useTranslation()
+  const current = i18n.language === 'zh-TW' ? 'zh-TW' : 'en'
+  return (
+    <div className="flex items-center shrink-0 rounded border border-slate-700 text-[10px] font-mono overflow-hidden">
+      <button
+        onClick={() => setLanguage('en')}
+        aria-pressed={current === 'en'}
+        className={`px-2 py-2 min-h-[40px] md:min-h-0 md:py-1 transition-colors ${current === 'en' ? 'bg-slate-800 text-cyan-300' : 'text-slate-500 hover:text-slate-300'}`}
+      >
+        EN
+      </button>
+      <button
+        onClick={() => setLanguage('zh-TW')}
+        aria-pressed={current === 'zh-TW'}
+        className={`px-2 py-2 min-h-[40px] md:min-h-0 md:py-1 border-l border-slate-700 transition-colors ${current === 'zh-TW' ? 'bg-slate-800 text-cyan-300' : 'text-slate-500 hover:text-slate-300'}`}
+      >
+        中
+      </button>
+    </div>
+  )
+}
+
 export default function App() {
+  const { t } = useTranslation()
   const urlState = useMemo(() => loadFromUrl(), [])
   const initialMode = useMemo(() => getModeFromLocation(urlState), [urlState])
   const [isMobile, setIsMobile] = useState(() => globalThis.innerWidth < 768)
@@ -1046,7 +1073,7 @@ export default function App() {
           <div className="relative" ref={actionsMenuRef}>
             <button
               onClick={() => setActionsMenuOpen((o) => !o)}
-              aria-label="More actions"
+              aria-label={t('app.toolbar.moreActions')}
               aria-expanded={actionsMenuOpen}
               className={`lg:hidden flex items-center justify-center min-h-[40px] min-w-[40px] rounded border text-xs font-mono transition-all
                 ${actionsMenuOpen ? 'border-slate-500 text-white bg-slate-800' : 'border-slate-700 text-slate-400 hover:text-white hover:border-slate-500'}`}
@@ -1065,7 +1092,7 @@ export default function App() {
               <button
                 data-tour="btn-vars"
                 onClick={() => setShowVarsPanel((v) => !v)}
-                title="Toggle Playbook Vars panel"
+                title={t('app.toolbar.varsTitle')}
                 className={`flex items-center gap-1.5 px-2.5 py-2 min-h-[40px] rounded border text-xs font-mono transition-all lg:min-h-0 lg:py-1.5
                   ${!(mode === 'playbook' && viewMode === 'flow') ? 'hidden' : ''}
                   ${showVarsPanel && mode === 'playbook'
@@ -1074,13 +1101,13 @@ export default function App() {
                   }`}
               >
                 <Variable size={12} />
-                Vars
+                {t('app.toolbar.vars')}
               </button>
 
               <button
                 data-tour="btn-facts"
                 onClick={() => setShowMockPanel((v) => !v)}
-                title="Toggle Mock Facts panel"
+                title={t('app.toolbar.factsTitle')}
                 className={`flex items-center gap-1.5 px-2.5 py-2 min-h-[40px] rounded border text-xs font-mono transition-all lg:min-h-0 lg:py-1.5
                   ${mode === 'playbook' && viewMode === 'resolve' ? 'hidden' : ''}
                   ${showMockPanel
@@ -1089,7 +1116,7 @@ export default function App() {
                   }`}
               >
                 <FlaskConical size={12} />
-                Facts
+                {t('app.toolbar.facts')}
               </button>
 
               <button
@@ -1097,7 +1124,7 @@ export default function App() {
                 className="flex items-center gap-1.5 px-2.5 py-2 min-h-[40px] rounded border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white text-xs font-mono transition-all lg:min-h-0 lg:py-1.5"
               >
                 <Info size={12} />
-                About
+                {t('app.toolbar.about')}
               </button>
 
               <button
@@ -1105,7 +1132,7 @@ export default function App() {
                 className="flex items-center gap-1.5 px-2.5 py-2 min-h-[40px] rounded border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white text-xs font-mono transition-all lg:min-h-0 lg:py-1.5"
               >
                 <RotateCcw size={12} />
-                Reset
+                {t('app.toolbar.reset')}
               </button>
 
               <button
@@ -1113,14 +1140,16 @@ export default function App() {
                   switchToResolve: () => handleSelectView('resolve'),
                   selectFirstVar: () => document.querySelector('[data-tour="resolver-table"] tbody tr')?.click(),
                 })}
-                title="Start walkthrough for this page"
+                title={t('app.toolbar.tourTitle')}
                 className="flex items-center gap-1.5 px-2.5 py-2 min-h-[40px] rounded border border-slate-700 text-slate-400 hover:border-cyan-700 hover:text-cyan-400 text-xs font-mono transition-all lg:min-h-0 lg:py-1.5"
               >
                 <HelpCircle size={12} />
-                Tour
+                {t('app.toolbar.tour')}
               </button>
             </div>
           </div>
+
+          <LanguageSwitcher />
 
           {/* Share — always inline (text collapses to icon below sm) */}
           {canShare && (
@@ -1128,7 +1157,7 @@ export default function App() {
               <button
                 data-tour="btn-share"
                 onClick={handleShare}
-                title="Build a shareable link"
+                title={t('app.toolbar.shareTitle')}
                 className={`flex items-center gap-1.5 px-2.5 py-2 min-h-[40px] rounded border text-xs font-mono transition-all md:min-h-0 md:py-1.5
                   ${copySuccess
                     ? 'border-green-500 text-green-400 bg-green-950'
@@ -1138,12 +1167,12 @@ export default function App() {
                   }`}
               >
                 <Share2 size={12} />
-                <span className="hidden sm:inline">{copySuccess ? 'Copied!' : shareTooLarge ? 'Too large to share' : 'Share'}</span>
+                <span className="hidden sm:inline">{copySuccess ? t('app.toolbar.copied') : shareTooLarge ? t('app.toolbar.shareTooLarge') : t('app.toolbar.share')}</span>
               </button>
               <span
                 className="hidden sm:inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded text-slate-600 hover:text-slate-400 transition-colors"
-                title="Your work auto-saves in this browser. Share builds a link with the data encoded in the URL hash — no server upload. Very large projects can't fit in a link."
-                aria-label="Sharing privacy note"
+                title={t('app.toolbar.sharingNote')}
+                aria-label={t('app.toolbar.sharingNoteAria')}
               >
                 <Info size={12} />
               </span>
@@ -1179,13 +1208,13 @@ export default function App() {
           {mode === 'playbook' && isDragging && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none gap-2">
               <div className="rounded-lg border-2 border-dashed border-cyan-500/60 bg-cyan-950/60 px-8 py-6 flex flex-col items-center gap-2">
-                <span className="text-cyan-400 text-xs font-mono">Drop files or ZIP</span>
-                <span className="text-slate-500 text-[10px] font-mono">YAML · scripts · any text file</span>
+                <span className="text-cyan-400 text-xs font-mono">{t('app.editor.dropFiles')}</span>
+                <span className="text-slate-500 text-[10px] font-mono">{t('app.editor.dropFilesHint')}</span>
               </div>
             </div>
           )}
           <PaneHeader
-            label={mode === 'jinja2' ? 'Jinja2 Expression' : mode === 'snippet' ? 'Task Snippet' : 'Playbook YAML'}
+            label={mode === 'jinja2' ? t('app.editor.paneJinja2') : mode === 'snippet' ? t('app.editor.paneSnippet') : t('app.editor.panePlaybook')}
             color={mode === 'jinja2' ? 'text-violet-400' : mode === 'snippet' ? 'text-blue-400' : 'text-cyan-400'}
           />
           <div className="flex flex-col overflow-visible md:flex-1 md:flex-row md:overflow-hidden">
@@ -1250,7 +1279,7 @@ export default function App() {
             min={EDITOR_WIDTH_MIN}
             max={EDITOR_WIDTH_MAX}
             onChange={setEditorWidthPct}
-            label="Resize editor and flow panels"
+            label={t('app.editor.resizeEditorFlow')}
           />
         )}
 
@@ -1260,8 +1289,8 @@ export default function App() {
             {/* Tab bar (attached to the panel it controls) */}
             <div data-tour="view-tabs" className="flex shrink-0 items-center gap-0.5 border-b border-slate-800 bg-slate-950 px-2">
               {[
-                { key: 'flow', label: 'Execution Flow', Icon: GitBranch },
-                { key: 'resolve', label: 'Variable Resolver', Icon: Network },
+                { key: 'flow', label: t('app.tabs.flow'), Icon: GitBranch },
+                { key: 'resolve', label: t('app.tabs.resolve'), Icon: Network },
               ].map(({ key, label, Icon }) => (
                 <button
                   key={key}
@@ -1271,7 +1300,7 @@ export default function App() {
                 >
                   <Icon size={12} />
                   {label}
-                  {key === 'resolve' && projectDetected && <span className="w-1 h-1 rounded-full bg-emerald-400" title="Project detected" />}
+                  {key === 'resolve' && projectDetected && <span className="w-1 h-1 rounded-full bg-emerald-400" title={t('app.tabs.projectDetected')} />}
                   {viewMode === key && <span className="absolute left-2 right-2 -bottom-px h-0.5 rounded-full bg-cyan-400" />}
                 </button>
               ))}
@@ -1315,7 +1344,7 @@ export default function App() {
                   min={SIDEBAR_WIDTH_MIN}
                   max={SIDEBAR_WIDTH_MAX}
                   onChange={setSidebarWidthPct}
-                  label="Resize flow and sidebar panels"
+                  label={t('app.editor.resizeFlowSidebar')}
                   reverse
                 />
                 <div
@@ -1391,8 +1420,7 @@ export default function App() {
 
       {/* Disclaimer footer */}
       <footer className="shrink-0 border-t border-slate-800 px-4 py-1.5 text-center text-slate-600 text-[10px] font-mono">
-        Ansible101 is an independent community tool &mdash; not affiliated with, endorsed by, or sponsored by Red&nbsp;Hat,&nbsp;Inc.
-        Ansible® is a trademark of Red&nbsp;Hat,&nbsp;LLC, registered in the United States and other countries.
+        {t('common.footerDisclaimer')}
       </footer>
     </div>
   )
@@ -1407,43 +1435,44 @@ function PaneHeader({ label, color = 'text-slate-400' }) {
 }
 
 function EmptyFlow({ parseError }) {
+  const { t } = useTranslation()
   if (parseError) {
     return (
       <div className="h-full flex flex-col items-center justify-center gap-4 px-8">
         <div className="flex flex-col items-center gap-2">
           <AlertCircle size={28} className="text-red-500" />
-          <p className="text-red-400 text-[11px] font-mono font-semibold tracking-wider uppercase">YAML Syntax Error</p>
+          <p className="text-red-400 text-[11px] font-mono font-semibold tracking-wider uppercase">{t('app.emptyFlow.syntaxError')}</p>
         </div>
         <div className="w-full max-w-sm bg-red-950/40 border border-red-900/60 rounded-md p-3 space-y-1.5">
           <p className="text-red-300 text-[11px] font-mono leading-relaxed break-words">{parseError.message}</p>
           {parseError.line !== undefined && (
             <p className="text-red-700 text-[10px] font-mono pt-1 border-t border-red-900/50">
-              Line {parseError.line + 1}, Column {parseError.column + 1}
+              {t('app.emptyFlow.lineColumn', { line: parseError.line + 1, column: parseError.column + 1 })}
             </p>
           )}
         </div>
-        <p className="text-slate-600 text-[9px] font-mono">Fix the error in the editor to see the flow</p>
+        <p className="text-slate-600 text-[9px] font-mono">{t('app.emptyFlow.fixHint')}</p>
       </div>
     )
   }
   return (
     <div className="h-full flex flex-col items-center justify-center gap-3 text-slate-700">
       <Layers size={34} />
-      <p className="text-xs font-mono text-center px-8">Write a valid Ansible playbook to see the flow.</p>
+      <p className="text-xs font-mono text-center px-8">{t('app.emptyFlow.placeholder')}</p>
     </div>
   )
 }
 
 function EmptyQuickCard({ onLoadExample }) {
+  const { t } = useTranslation()
   return (
     <div className="h-full flex flex-col items-center justify-center gap-4 px-8 text-center">
       <FileCode size={34} className="text-slate-600" />
       <div className="max-w-sm space-y-1.5">
-        <p className="text-slate-300 text-sm font-mono">Task Snippet decoder</p>
+        <p className="text-slate-300 text-sm font-mono">{t('app.emptyQuickCard.title')}</p>
         <p className="text-[11px] font-mono leading-relaxed text-slate-500">
-          Paste a single Ansible task — a <code className="text-slate-400">- name:</code> block with a module —
-          to see its module, arguments, a plain-English explanation, and live rendering of any
-          <code className="text-slate-400"> {'{{ }}'}</code> values.
+          {t('app.emptyQuickCard.hintPart1')} <code className="text-slate-400">- name:</code> {t('app.emptyQuickCard.hintPart2')}
+          <code className="text-slate-400"> {'{{ }}'}</code> {t('app.emptyQuickCard.hintPart3')}
         </p>
       </div>
       {onLoadExample && (
@@ -1452,7 +1481,7 @@ function EmptyQuickCard({ onLoadExample }) {
           className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-700 bg-blue-950/40 hover:bg-blue-950/70 hover:border-blue-500 text-blue-300 hover:text-blue-200 text-sm font-mono transition-all"
         >
           <FileCode size={14} />
-          Load example task
+          {t('app.emptyQuickCard.loadExample')}
         </button>
       )}
     </div>
@@ -1503,6 +1532,7 @@ function LandingScreen({
   onStartPlaybookTour,
   onOpenAbout,
 }) {
+  const { t } = useTranslation()
   const [dragOver, setDragOver] = useState(false)
   const [isProcessingDrop, setIsProcessingDrop] = useState(false)
   const [dropError, setDropError] = useState(null)
@@ -1520,13 +1550,13 @@ function LandingScreen({
       if (files.length > 0) { onDropFiles(files); return }
       const text = e.dataTransfer?.getData('text/plain')
       if (text) { onPaste(text); return }
-      setDropError('No readable files found — check the archive isn\'t corrupt or empty.')
+      setDropError(t('app.landing.noReadableFiles'))
     } catch (err) {
-      setDropError(`Couldn't read that drop: ${err.message || err}`)
+      setDropError(t('app.landing.couldntRead', { message: err.message || err }))
     } finally {
       setIsProcessingDrop(false)
     }
-  }, [onDropFiles, onPaste])
+  }, [onDropFiles, onPaste, t])
 
   const handleDragLeave = useCallback((e) => {
     // Only clear when pointer truly leaves the outer container
@@ -1536,11 +1566,15 @@ function LandingScreen({
   return (
     <div
       ref={dropRef}
-      className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center gap-8 px-4 py-10 sm:px-6"
+      className="relative min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center gap-8 px-4 py-10 sm:px-6"
       onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+        <LanguageSwitcher />
+      </div>
+
       <div className="flex flex-col items-center gap-2">
         <div className="flex items-center gap-3">
           <BookOpen size={28} className="text-cyan-400" />
@@ -1550,7 +1584,7 @@ function LandingScreen({
           </h1>
         </div>
         <p className="text-slate-400 text-sm font-mono text-center max-w-md">
-          Visual debugger, logic explainer and Jinja2 sandbox for Ansible playbooks.
+          {t('app.landing.tagline')}
         </p>
       </div>
 
@@ -1568,16 +1602,16 @@ function LandingScreen({
         )}
         <div className="text-center">
           {isProcessingDrop ? (
-            <p className="text-cyan-300 font-mono text-sm">Reading project files…</p>
+            <p className="text-cyan-300 font-mono text-sm">{t('app.landing.readingFiles')}</p>
           ) : (
             <>
               <p className="text-white font-mono text-lg font-semibold flex items-center justify-center gap-1.5">
-                <span>Press</span>
+                <span>{t('app.landing.pressBefore')}</span>
                 <kbd className="inline-block px-2 py-0.5 rounded bg-slate-800 border border-slate-600 text-cyan-400 text-sm font-mono mx-1">Ctrl+V</kbd>
-                <span>to paste</span>
+                <span>{t('app.landing.pressAfter')}</span>
               </p>
               <p className="text-slate-500 text-xs font-mono mt-1">
-                or drag & drop your YAML, task snippet, project folder, or .zip
+                {t('app.landing.dragDropHint')}
               </p>
             </>
           )}
@@ -1597,7 +1631,7 @@ function LandingScreen({
 
         <div className="flex items-center gap-3 w-full max-w-xs">
           <div className="flex-1 h-px bg-slate-800" />
-          <span className="text-slate-600 text-xs font-mono">or</span>
+          <span className="text-slate-600 text-xs font-mono">{t('app.landing.or')}</span>
           <div className="flex-1 h-px bg-slate-800" />
         </div>
 
@@ -1607,14 +1641,14 @@ function LandingScreen({
             className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-cyan-700 bg-cyan-950/40 hover:bg-cyan-950/70 hover:border-cyan-500 text-cyan-300 hover:text-cyan-200 text-sm font-mono transition-all"
           >
             <BookOpen size={14} />
-            Load sample playbook
+            {t('app.landing.loadSample')}
           </button>
           <button
             onClick={onOpenLimits}
             className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white text-sm font-mono transition-all"
           >
             <FlaskConical size={14} />
-            Open Limits Lab
+            {t('app.landing.openLimits')}
           </button>
         </div>
 
@@ -1623,28 +1657,27 @@ function LandingScreen({
             onClick={onLoadInventorySample}
             className="text-emerald-400 hover:text-emerald-300 transition-colors"
           >
-            Load demo inventory into Limits
+            {t('app.landing.loadDemoInventory')}
           </button>
           <span className="text-slate-700">•</span>
           <button
             onClick={onStartPlaybookTour}
             className="text-cyan-400 hover:text-cyan-300 transition-colors"
           >
-            Start guided walkthrough
+            {t('app.landing.startTour')}
           </button>
         </div>
       </div>
 
       <p className="text-slate-600 text-[10px] font-mono text-center max-w-sm">
-        Ansible101 is an independent community tool and is not affiliated with,
-        endorsed by, or sponsored by Red&nbsp;Hat,&nbsp;Inc. Ansible® is a trademark of Red&nbsp;Hat,&nbsp;LLC, registered in the United States and other countries.
+        {t('common.landingDisclaimer')}
       </p>
 
       <button
         onClick={onOpenAbout}
         className="text-[11px] font-mono text-slate-500 transition-colors hover:text-cyan-400"
       >
-        About / Legal
+        {t('app.landing.aboutLegal')}
       </button>
     </div>
   )

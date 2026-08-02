@@ -4,6 +4,7 @@
  * selected node (or all tasks if nothing is selected).
  */
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Package, Terminal, FileCog, Activity, RefreshCw,
   Bell, HelpCircle, AlertTriangle, Info, Zap,
@@ -189,6 +190,7 @@ function TaskSnippet({ task }) {
 function ExplanationCard({
   task, isSelected, stage, host, projectModel, activePlaybook, inventoryData, invPath, facts, extraVarsLayers, mocks,
 }) {
+  const { t } = useTranslation()
   if (!task) return null
   const [showSnippet, setShowSnippet] = useState(false)
   const { text, warning, icon, docUrl } = generateExplanation(task)
@@ -265,7 +267,7 @@ function ExplanationCard({
       {task.when && (
         <div className="mt-2 flex items-center gap-1 text-amber-400 text-xs font-mono">
           <Info size={11} />
-          <span className="min-w-0 break-all">Condition: <span className="text-amber-300">{Array.isArray(task.when) ? task.when.join(' AND ') : task.when}</span></span>
+          <span className="min-w-0 break-all">{t('humanSidebar.condition')} <span className="text-amber-300">{Array.isArray(task.when) ? task.when.join(' AND ') : task.when}</span></span>
         </div>
       )}
       {/* Loops — show the actual items being iterated, not just a count,
@@ -276,8 +278,8 @@ function ExplanationCard({
             <RefreshCw size={11} className="mt-0.5 shrink-0" />
             <span className="min-w-0 break-words">
               {loopItems
-                ? `Loops over ${loopItems.length} item(s) as {{ ${loopVar} }}:`
-                : `Loops over a dynamically-resolved list as {{ ${loopVar} }} — can't preview items statically.`}
+                ? <>{t('humanSidebar.loopCountPrefix', { count: loopItems.length })} {`{{ ${loopVar} }}:`}</>
+                : <>{t('humanSidebar.loopDynamicPrefix')} {`{{ ${loopVar} }}`} {t('humanSidebar.loopDynamicSuffix')}</>}
             </span>
           </div>
           {loopItems && (
@@ -295,7 +297,7 @@ function ExplanationCard({
                 )
               })}
               {loopItems.length > 12 && (
-                <span className="px-1.5 py-0.5 text-violet-600 text-[10px] shrink-0">+{loopItems.length - 12} more</span>
+                <span className="px-1.5 py-0.5 text-violet-600 text-[10px] shrink-0">{t('humanSidebar.loopMore', { count: loopItems.length - 12 })}</span>
               )}
             </div>
           )}
@@ -305,7 +307,7 @@ function ExplanationCard({
       {task.notify && (
         <div className="mt-1 flex items-center gap-1 text-amber-300 text-xs font-mono">
           <Bell size={11} />
-          <span className="min-w-0 break-all">Notifies: {Array.isArray(task.notify) ? task.notify.join(', ') : task.notify}</span>
+          <span className="min-w-0 break-all">{t('humanSidebar.notifies')} {Array.isArray(task.notify) ? task.notify.join(', ') : task.notify}</span>
         </div>
       )}
       {/* Warning */}
@@ -320,7 +322,7 @@ function ExplanationCard({
       {resolution && footerNames.length > 0 && (
         <div className="mt-2 pt-2 border-t border-slate-700/60">
           <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1.5">
-            Also referenced
+            {t('humanSidebar.alsoReferenced')}
           </div>
           <div className="flex flex-col gap-1">
             {footerNames.sort().map((name) => {
@@ -340,10 +342,10 @@ function ExplanationCard({
                       </span>
                     </>
                   ) : fullInfo ? (
-                    <span className="text-orange-400/80 italic">not set yet at this point</span>
+                    <span className="text-orange-400/80 italic">{t('humanSidebar.notSetYet')}</span>
                   ) : (
-                    <span className="text-red-400/70 italic" title="No source (role defaults, group/host vars, play vars, set_fact, etc.) defines this for the selected host">
-                      never resolves for this host
+                    <span className="text-red-400/70 italic" title={t('humanSidebar.neverResolvesTitle')}>
+                      {t('humanSidebar.neverResolves')}
                     </span>
                   )}
                 </div>
@@ -370,7 +372,7 @@ function ExplanationCard({
             className="inline-flex items-center gap-1 text-[10px] font-mono text-slate-500 hover:text-cyan-400 transition-colors"
           >
             <ExternalLink size={9} />
-            ansible docs
+            {t('humanSidebar.ansibleDocs')}
           </a>
         )}
       </div>
@@ -382,6 +384,7 @@ function ExplanationCard({
 export default function HumanSidebar({
   plays, nodes, selectedNode, projectModel, activePlaybook, host, inventoryData, invPath, facts, extraVarsLayers, mocks,
 }) {
+  const { t } = useTranslation()
   const selectedNodeData = selectedNode?.data
   const selectedNodeType = selectedNode?.type
   // Built from the Flow graph's own nodes (not re-derived from `plays`) so
@@ -405,7 +408,7 @@ export default function HumanSidebar({
       <div className="px-4 py-3 border-b border-slate-700 flex items-center gap-2 shrink-0">
         <FileText size={15} className="text-cyan-400" />
         <span className="text-cyan-400 text-xs font-mono font-semibold uppercase tracking-widest">
-          Human Logic
+          {t('humanSidebar.header')}
         </span>
       </div>
 
@@ -420,7 +423,7 @@ export default function HumanSidebar({
               return (
                 <div key={i} className="mb-3 rounded border border-blue-800 bg-blue-950 p-3">
                   <div className="text-blue-300 text-xs font-mono font-semibold mb-1">
-                    Play: {play.name || play.hosts || `Play ${i + 1}`}
+                    {t('humanSidebar.playPrefix')} {play.name || play.hosts || t('humanSidebar.playFallback', { number: i + 1 })}
                   </div>
                   {summary && (
                     <p className="text-slate-200 text-xs leading-relaxed mb-1">{summary}</p>
@@ -442,18 +445,18 @@ export default function HumanSidebar({
         {selectedNodeType !== 'missingFileNode' && selectedNodeType !== 'includeNode' && selectedNodeData?.task ? (
           <>
             <div className="text-slate-500 text-xs font-mono mb-2 uppercase tracking-wider">
-              Selected Task
+              {t('humanSidebar.selectedTask')}
             </div>
             <ExplanationCard task={selectedNodeData.task} stage={selectedNodeData.stage} isSelected {...resolveCtx} />
           </>
         ) : selectedNodeType !== 'missingFileNode' && selectedNodeType !== 'includeNode' && !selectedNodeData?.task ? (
           <>
             <div className="text-slate-500 text-xs font-mono mb-2 uppercase tracking-wider">
-              All Tasks
+              {t('humanSidebar.allTasks')}
             </div>
             {taskNodes.length === 0 && (
               <p className="text-slate-600 text-xs italic">
-                Write or paste an Ansible playbook in the editor to see explanations here.
+                {t('humanSidebar.emptyState')}
               </p>
             )}
             {taskNodes.map((n) => (
@@ -467,6 +470,7 @@ export default function HumanSidebar({
 }
 
 function HostMismatchBanner({ host }) {
+  const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
   return (
     <div className="mb-4 rounded border border-orange-700 bg-orange-950/40">
@@ -476,14 +480,11 @@ function HostMismatchBanner({ host }) {
       >
         {expanded ? <ChevronDown size={10} className="shrink-0" /> : <ChevronRight size={10} className="shrink-0" />}
         <AlertTriangle size={12} className="shrink-0" />
-        <span className="truncate">Host &quot;{host}&quot; isn&apos;t targeted by any play</span>
+        <span className="truncate">{t('humanSidebar.hostMismatch.title', { host })}</span>
       </button>
       {expanded && (
         <p className="text-orange-200/80 text-xs leading-relaxed px-2.5 pb-2.5">
-          None of this playbook&apos;s plays match the selected host&apos;s groups — in real Ansible
-          this play would never run against it. Variable values below are shown as a
-          best-effort fallback (play/role vars, not host-specific group_vars/host_vars); switch
-          the host or inventory in the Variable Resolver tab to verify for real.
+          {t('humanSidebar.hostMismatch.detail')}
         </p>
       )}
     </div>
@@ -491,6 +492,7 @@ function HostMismatchBanner({ host }) {
 }
 
 function MissingFileCard({ data }) {
+  const { t } = useTranslation()
   const filename = data?.label
   const sourceFile = data?.sourceFile
 
@@ -500,20 +502,20 @@ function MissingFileCard({ data }) {
         <div className="flex items-center gap-2 mb-2">
           <FileQuestion size={14} className="text-teal-400" />
           <span className="text-teal-300 text-xs font-mono font-semibold uppercase tracking-wide">
-            {data.cycle ? 'Circular Include' : 'Deeply Nested Include'}
+            {data.cycle ? t('humanSidebar.missingFile.circularTitle') : t('humanSidebar.missingFile.deepTitle')}
           </span>
         </div>
         <p className="text-slate-300 text-xs leading-relaxed mb-1">
           {data.cycle
-            ? 'This file is already part of the include chain above it, so expanding it again here would loop forever.'
-            : 'This include chain is nested very deep, so expansion stopped here to keep the diagram from running away.'}{' '}
-          The file itself is already in your workspace — it&apos;s just not redrawn inline:
+            ? t('humanSidebar.missingFile.circularBody')
+            : t('humanSidebar.missingFile.deepBody')}{' '}
+          {t('humanSidebar.missingFile.alreadyInWorkspace')}
         </p>
         <div className="mt-2 rounded bg-slate-900 border border-teal-800 px-2 py-1.5 font-mono text-teal-300 text-xs break-all select-all">
           {filename}
         </div>
         {sourceFile && (
-          <p className="text-slate-500 text-[10px] mt-2">Referenced from <span className="text-cyan-300 font-mono break-all">{sourceFile}</span>.</p>
+          <p className="text-slate-500 text-[10px] mt-2">{t('humanSidebar.missingFile.referencedFrom')} <span className="text-cyan-300 font-mono break-all">{sourceFile}</span>.</p>
         )}
       </div>
     )
@@ -524,16 +526,16 @@ function MissingFileCard({ data }) {
       <div className="rounded border-2 border-dashed border-orange-700 bg-orange-950 p-3 mb-3">
         <div className="flex items-center gap-2 mb-2">
           <FileQuestion size={14} className="text-orange-400" />
-          <span className="text-orange-300 text-xs font-mono font-semibold uppercase tracking-wide">Dynamic Include</span>
+          <span className="text-orange-300 text-xs font-mono font-semibold uppercase tracking-wide">{t('humanSidebar.missingFile.dynamicTitle')}</span>
         </div>
         <p className="text-slate-300 text-xs leading-relaxed mb-1">
-          This target is computed from a Jinja2 expression{sourceFile ? <> in <span className="text-cyan-300 font-mono break-all">{sourceFile}</span></> : null}, so it depends on runtime facts/variables and can&apos;t be resolved statically:
+          {t('humanSidebar.missingFile.dynamicBody1')}{sourceFile ? <> {t('humanSidebar.missingFile.dynamicIn')} <span className="text-cyan-300 font-mono break-all">{sourceFile}</span></> : null}{t('humanSidebar.missingFile.dynamicBody2')}
         </p>
         <div className="mt-2 rounded bg-slate-900 border border-orange-800 px-2 py-1.5 font-mono text-orange-300 text-xs break-all select-all">
           {filename}
         </div>
         <p className="text-slate-500 text-[10px] mt-2">
-          Add the actual file(s) it could resolve to (e.g. one per OS family) so each can be expanded individually.
+          {t('humanSidebar.missingFile.dynamicHint')}
         </p>
       </div>
     )
@@ -543,36 +545,37 @@ function MissingFileCard({ data }) {
     <div className="rounded border-2 border-dashed border-orange-700 bg-orange-950 p-3 mb-3">
       <div className="flex items-center gap-2 mb-2">
         <FileQuestion size={14} className="text-orange-400" />
-        <span className="text-orange-300 text-xs font-mono font-semibold uppercase tracking-wide">Unresolved Include</span>
+        <span className="text-orange-300 text-xs font-mono font-semibold uppercase tracking-wide">{t('humanSidebar.missingFile.unresolvedTitle')}</span>
       </div>
       <p className="text-slate-300 text-xs leading-relaxed mb-3">
-        This task includes an external file that hasn't been added to the workspace yet
-        {sourceFile ? <> (referenced from <span className="text-cyan-300 font-mono break-all">{sourceFile}</span>)</> : null}.
+        {t('humanSidebar.missingFile.unresolvedBody')}
+        {sourceFile ? <> {t('humanSidebar.missingFile.unresolvedBodyRef')} <span className="text-cyan-300 font-mono break-all">{sourceFile}</span>)</> : null}.
       </p>
       <div className="rounded bg-slate-900 border border-slate-700 px-3 py-2">
-        <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">To expand this node:</div>
+        <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">{t('humanSidebar.missingFile.toExpand')}</div>
         <ol className="text-slate-300 text-xs space-y-1 list-decimal list-inside">
-          <li>Click <span className="text-cyan-400 font-mono">+ add file</span> above the editor</li>
-          <li>Double-click the new tab and rename it to exactly:</li>
+          <li>{t('humanSidebar.missingFile.step1Before')} <span className="text-cyan-400 font-mono">+ add file</span> {t('humanSidebar.missingFile.step1After')}</li>
+          <li>{t('humanSidebar.missingFile.step2')}</li>
         </ol>
         <div className="mt-2 rounded bg-slate-800 border border-orange-800 px-2 py-1.5 font-mono text-orange-300 text-xs break-all select-all">
           {filename}
         </div>
-        <p className="text-slate-500 text-[10px] mt-2">Then paste your task list into that file's editor.</p>
+        <p className="text-slate-500 text-[10px] mt-2">{t('humanSidebar.missingFile.step3')}</p>
       </div>
     </div>
   )
 }
 
 function IncludeCard({ filename }) {
+  const { t } = useTranslation()
   return (
     <div className="rounded border border-teal-700 bg-teal-950 p-3 mb-3">
       <div className="flex items-center gap-2 mb-1">
         <FolderOpen size={14} className="text-teal-400" />
-        <span className="text-teal-300 text-xs font-mono font-semibold uppercase tracking-wide">Included File</span>
+        <span className="text-teal-300 text-xs font-mono font-semibold uppercase tracking-wide">{t('humanSidebar.include.title')}</span>
       </div>
       <p className="text-slate-300 text-xs leading-relaxed">
-        Tasks are being loaded from <span className="text-teal-300 font-mono break-all">{filename}</span>. The nodes below this card show the expanded contents.
+        {t('humanSidebar.include.bodyBefore')} <span className="text-teal-300 font-mono break-all">{filename}</span>{t('humanSidebar.include.bodyAfter')}
       </p>
     </div>
   )

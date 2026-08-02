@@ -13,6 +13,8 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useRef, useState, useMemo, useCallback, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
+import i18n from '../i18n'
 import {
   ChevronDown, ChevronRight, Plus, Pencil, X, AlertTriangle,
   Trash2, FilePlus, FolderPlus, Folder, FolderOpen, EyeOff,
@@ -33,16 +35,16 @@ function isLowValueFolder(name) {
 
 /** Human-readable explanation of where a missing reference came from. */
 function describeMissingRef(item) {
-  const from = item.sourceFile ? ` (in ${item.sourceFile})` : ''
+  const from = item.sourceFile ? i18n.t('fileExplorer.missingRef.inFile', { file: item.sourceFile }) : ''
   if (item.kind === 'role') {
-    return `Role used in play "${item.playLabel}"${from}. Ansible would look for it at roles/${item.roleName}/tasks/main.yml.`
+    return i18n.t('fileExplorer.missingRef.roleUsedIn', { play: item.playLabel, from, role: item.roleName })
   }
   if (item.kind === 'include_tasks' || item.kind === 'import_tasks') {
     return item.taskName
-      ? `Referenced via ${item.kind} in task "${item.taskName}"${from}.`
-      : `Referenced via ${item.kind}${from}.`
+      ? i18n.t('fileExplorer.missingRef.referencedViaTask', { kind: item.kind, task: item.taskName, from })
+      : i18n.t('fileExplorer.missingRef.referencedVia', { kind: item.kind, from })
   }
-  return 'Referenced by the playbook but not found in this project.'
+  return i18n.t('fileExplorer.missingRef.notFound')
 }
 
 function buildStatusMap(extraFiles, nodes) {
@@ -267,6 +269,7 @@ function FileRow({
   file, status, rel, depth = 0, active, renaming, onSwitch, onRemove, onRename, onStartRename, onCancelRename,
   onContextMenu, validate, hasError = false, onDragStart, onDragOver, onDrop, isDragOver,
 }) {
+  const { t } = useTranslation()
   const inputRef = useRef(null)
   const [renameError, setRenameError] = useState(null)
 
@@ -330,14 +333,14 @@ function FileRow({
         <span className="text-red-400 text-[8px] font-mono shrink-0 px-1" title={renameError}>!</span>
       )}
       {!renaming && hasError && (
-        <span className="w-1 h-1 rounded-full bg-red-500 shrink-0 mr-px" title="YAML error" />
+        <span className="w-1 h-1 rounded-full bg-red-500 shrink-0 mr-px" title={t('fileExplorer.yamlError')} />
       )}
       {!renaming && (
         <span className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-          <button onClick={(e) => { e.stopPropagation(); onStartRename() }} className="p-px text-slate-600 hover:text-slate-300" title="Rename">
+          <button onClick={(e) => { e.stopPropagation(); onStartRename() }} className="p-px text-slate-600 hover:text-slate-300" title={t('fileExplorer.rename')}>
             <Pencil size={8} />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); onRemove() }} className="p-px text-slate-600 hover:text-red-400" title="Remove">
+          <button onClick={(e) => { e.stopPropagation(); onRemove() }} className="p-px text-slate-600 hover:text-red-400" title={t('fileExplorer.remove')}>
             <X size={8} />
           </button>
         </span>
@@ -347,13 +350,14 @@ function FileRow({
 }
 
 function MissingRow({ item, rel, depth = 0, onOpenMenu }) {
+  const { t } = useTranslation()
   return (
     <div
       onClick={onOpenMenu}
       onContextMenu={(e) => { e.preventDefault(); onOpenMenu(e) }}
       style={padFor(depth)}
       className="group flex items-center gap-1 pr-1 h-[24px] border-l-[2px] border-l-orange-700/40 hover:bg-orange-950/10 transition-colors cursor-pointer"
-      title="Click for details and options"
+      title={t('fileExplorer.clickForDetails')}
     >
       <AlertTriangle size={9} className="text-orange-700/60 shrink-0" />
       <span className="flex-1 min-w-0 font-mono text-[10px] truncate text-orange-700/60">
@@ -429,6 +433,7 @@ function FolderRow({ path, name, open, onToggle, hasMissing, lowValue = false, d
 /* ─── recursive tree renderer ─────────────────────────────── */
 
 function TreeLevel({ node, path, depth, openDirs, toggleDir, ctx }) {
+  const { t } = useTranslation()
   const dirNames = [...node.dirs.keys()].sort((a, b) => a.localeCompare(b))
   const files = [...node.files].sort((a, b) => a.base.localeCompare(b.base))
   const missing = [...node.missing].sort((a, b) => a.base.localeCompare(b.base))
@@ -456,11 +461,11 @@ function TreeLevel({ node, path, depth, openDirs, toggleDir, ctx }) {
               onCancelRename={() => ctx.setRenamingFolderPath(null)}
               validate={(val) => ctx.validateFolderRename(childPath, val)}
               onContextMenu={(e) => ctx.openMenu(e, [
-                { label: 'New file here', Icon: FilePlus, onSelect: () => ctx.onAdd(childPath) },
-                { label: 'New folder here', Icon: FolderPlus, onSelect: () => ctx.onAddFolder(childPath) },
-                { label: 'Rename', Icon: Pencil, onSelect: () => ctx.setRenamingFolderPath(childPath) },
+                { label: t('fileExplorer.newFileHere'), Icon: FilePlus, onSelect: () => ctx.onAdd(childPath) },
+                { label: t('fileExplorer.newFolderHere'), Icon: FolderPlus, onSelect: () => ctx.onAddFolder(childPath) },
+                { label: t('fileExplorer.rename'), Icon: Pencil, onSelect: () => ctx.setRenamingFolderPath(childPath) },
                 { divider: true },
-                { label: 'Delete', Icon: Trash2, danger: true, onSelect: () => ctx.onRemoveFolder(childPath) },
+                { label: t('fileExplorer.delete'), Icon: Trash2, danger: true, onSelect: () => ctx.onRemoveFolder(childPath) },
               ])}
             />
             {open && <TreeLevel node={child} path={childPath} depth={depth + 1} openDirs={openDirs} toggleDir={toggleDir} ctx={ctx} />}
@@ -488,8 +493,8 @@ function TreeLevel({ node, path, depth, openDirs, toggleDir, ctx }) {
           onDrop={() => ctx.commitDrop(file.id)}
           isDragOver={ctx.overId === file.id && ctx.dragId !== file.id}
           onContextMenu={(e) => ctx.openMenu(e, [
-            { label: 'Rename', Icon: Pencil, onSelect: () => ctx.setRenamingFileId(file.id) },
-            { label: 'Delete', Icon: Trash2, danger: true, onSelect: () => ctx.onRemove(file.id) },
+            { label: t('fileExplorer.rename'), Icon: Pencil, onSelect: () => ctx.setRenamingFileId(file.id) },
+            { label: t('fileExplorer.delete'), Icon: Trash2, danger: true, onSelect: () => ctx.onRemove(file.id) },
           ])}
         />
       ))}
@@ -502,9 +507,9 @@ function TreeLevel({ node, path, depth, openDirs, toggleDir, ctx }) {
           onOpenMenu={(e) => ctx.openMenu(e, [
             { header: true, text: describeMissingRef(item) },
             { divider: true },
-            { label: 'Add file', Icon: FilePlus, onSelect: () => ctx.onAddNamed(item.filename) },
-            { label: 'Ignore', Icon: EyeOff, onSelect: () => ctx.onIgnoreMissing(item.filename) },
-            { label: 'Ignore all missing', Icon: EyeOff, onSelect: () => ctx.onIgnoreAllMissing(ctx.allMissingFilenames) },
+            { label: t('fileExplorer.addFile'), Icon: FilePlus, onSelect: () => ctx.onAddNamed(item.filename) },
+            { label: t('fileExplorer.ignore'), Icon: EyeOff, onSelect: () => ctx.onIgnoreMissing(item.filename) },
+            { label: t('fileExplorer.ignoreAllMissing'), Icon: EyeOff, onSelect: () => ctx.onIgnoreAllMissing(ctx.allMissingFilenames) },
           ])}
         />
       ))}
@@ -543,6 +548,7 @@ export default function FileExplorer({
   fileErrors = {},
   isMobile = false,
 }) {
+  const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(false)
   const [width, setWidth] = useState(140)
   // Which folders are expanded — persisted so it survives reloads/tab
@@ -613,19 +619,19 @@ export default function FileExplorer({
 
   // A file may take the main row's slot — exclude its own id from collisions.
   const validateRename = useCallback((excludeId, candidate) => {
-    if (!isValidRelativePath(candidate)) return 'Invalid path'
-    if (files.some((f) => f.id !== excludeId && f.name === candidate)) return 'A file with that name already exists'
+    if (!isValidRelativePath(candidate)) return t('fileExplorer.invalidPath')
+    if (files.some((f) => f.id !== excludeId && f.name === candidate)) return t('fileExplorer.nameExists')
     return null
-  }, [files])
+  }, [files, t])
 
   // Folder rename only conflicts with files OUTSIDE the folder being renamed
   // (its own contents move with it).
   const validateFolderRename = useCallback((oldPrefix, candidate) => {
-    if (!isValidRelativePath(candidate)) return 'Invalid path'
+    if (!isValidRelativePath(candidate)) return t('fileExplorer.invalidPath')
     const collides = files.some((f) => f.name === candidate && f.name !== oldPrefix && !f.name.startsWith(`${oldPrefix}/`))
-    if (collides) return 'A file with that name already exists'
+    if (collides) return t('fileExplorer.nameExists')
     return null
-  }, [files])
+  }, [files, t])
 
   const allMissingFilenames = useMemo(() => missingRefs.map((m) => m.filename), [missingRefs])
 
@@ -665,13 +671,13 @@ export default function FileExplorer({
     return (
       <div className="border-b border-slate-800 bg-slate-950 shrink-0">
         <div className="flex items-center gap-2 px-3 py-2">
-          <span className="text-[9px] font-mono uppercase tracking-[0.14em] text-slate-600 flex-1">files</span>
+          <span className="text-[9px] font-mono uppercase tracking-[0.14em] text-slate-600 flex-1">{t('fileExplorer.filesLabel')}</span>
           {missingRefs.length > 0 && (
             <span className="flex items-center gap-1 text-[9px] font-mono text-orange-700/80">
               <AlertTriangle size={9} />{missingRefs.length}
             </span>
           )}
-          <button onClick={onAdd} title="New file" className="p-1 text-slate-600 hover:text-cyan-400 transition-colors shrink-0">
+          <button onClick={onAdd} title={t('fileExplorer.newFile')} className="p-1 text-slate-600 hover:text-cyan-400 transition-colors shrink-0">
             <Plus size={12} />
           </button>
         </div>
@@ -723,7 +729,7 @@ export default function FileExplorer({
       <div className="flex flex-col items-center border-r border-slate-800 bg-slate-950 select-none shrink-0 w-5">
         <button
           onClick={() => setCollapsed(false)}
-          title="Expand"
+          title={t('fileExplorer.expand')}
           className="flex flex-col items-center w-full pt-2 gap-1.5 group flex-1"
         >
           <ChevronRight size={10} className="text-slate-600 group-hover:text-cyan-500 transition-colors" />
@@ -736,8 +742,8 @@ export default function FileExplorer({
   }
 
   const backgroundMenuItems = [
-    { label: 'New file', Icon: FilePlus, onSelect: () => onAdd() },
-    { label: 'New folder', Icon: FolderPlus, onSelect: () => onAddFolder() },
+    { label: t('fileExplorer.newFile'), Icon: FilePlus, onSelect: () => onAdd() },
+    { label: t('fileExplorer.newFolder'), Icon: FolderPlus, onSelect: () => onAddFolder() },
   ]
 
   /* ── Expanded ── */
@@ -750,7 +756,7 @@ export default function FileExplorer({
 
       {/* Header */}
       <div className="flex items-center h-[26px] px-2 shrink-0 gap-0.5">
-        <span className="text-[8px] font-mono uppercase tracking-[0.14em] text-slate-600 flex-1">files</span>
+        <span className="text-[8px] font-mono uppercase tracking-[0.14em] text-slate-600 flex-1">{t('fileExplorer.filesLabel')}</span>
         {missingRefs.length > 0 && (
           <span className="flex items-center gap-px text-[8px] font-mono text-orange-700/80">
             <AlertTriangle size={7} />{missingRefs.length}
@@ -759,19 +765,19 @@ export default function FileExplorer({
         {ignoredMissing.length > 0 && (
           <button
             onClick={() => onUnignoreAllMissing?.()}
-            title="Show ignored missing references again"
+            title={t('fileExplorer.showIgnoredAgain')}
             className="flex items-center gap-px text-[8px] font-mono text-slate-600 hover:text-slate-400 transition-colors shrink-0"
           >
             <EyeOff size={7} />{ignoredMissing.length}
           </button>
         )}
-        <button onClick={() => onAddFolder()} title="New folder" className="p-0.5 text-slate-600 hover:text-cyan-400 transition-colors shrink-0">
+        <button onClick={() => onAddFolder()} title={t('fileExplorer.newFolder')} className="p-0.5 text-slate-600 hover:text-cyan-400 transition-colors shrink-0">
           <FolderPlus size={10} />
         </button>
-        <button onClick={() => onAdd()} title="New file" className="p-0.5 text-slate-600 hover:text-cyan-400 transition-colors shrink-0">
+        <button onClick={() => onAdd()} title={t('fileExplorer.newFile')} className="p-0.5 text-slate-600 hover:text-cyan-400 transition-colors shrink-0">
           <Plus size={10} />
         </button>
-        <button onClick={() => setCollapsed(true)} title="Collapse" className="p-0.5 text-slate-700 hover:text-slate-400 transition-colors shrink-0">
+        <button onClick={() => setCollapsed(true)} title={t('fileExplorer.collapse')} className="p-0.5 text-slate-700 hover:text-slate-400 transition-colors shrink-0">
           <ChevronDown size={10} />
         </button>
       </div>
@@ -787,7 +793,7 @@ export default function FileExplorer({
           onCancelRename={() => setRenamingFileId(null)}
           validate={(val) => validateRename(mainFile.id, val)}
           onContextMenu={(e) => openMenu(e, [
-            { label: 'Rename', Icon: Pencil, onSelect: () => setRenamingFileId(mainFile.id) },
+            { label: t('fileExplorer.rename'), Icon: Pencil, onSelect: () => setRenamingFileId(mainFile.id) },
           ])}
         />
 
@@ -798,13 +804,13 @@ export default function FileExplorer({
             onClick={() => onAdd()}
             className="flex-1 flex items-center gap-1 px-2 h-[20px] text-[8px] font-mono text-slate-700 hover:text-slate-500 transition-colors"
           >
-            <Plus size={7} /><span>new file</span>
+            <Plus size={7} /><span>{t('fileExplorer.newFileBottom')}</span>
           </button>
           <button
             onClick={() => onAddFolder()}
             className="flex items-center gap-1 px-2 h-[20px] text-[8px] font-mono text-slate-700 hover:text-slate-500 transition-colors"
           >
-            <FolderPlus size={7} /><span>new folder</span>
+            <FolderPlus size={7} /><span>{t('fileExplorer.newFolderBottom')}</span>
           </button>
         </div>
       </div>

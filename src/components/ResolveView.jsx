@@ -11,6 +11,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import {
   FolderInput, Server, Users, Filter, Variable,
   ArrowRightLeft, Zap, AlertTriangle, ChevronRight, X, ExternalLink, Loader2, FlaskConical,
@@ -59,6 +60,7 @@ export default function ResolveView({
   invPath, onInvPathChange, host, onHostChange, inventoryData, hosts,
   picked, setPicked, pairs, setPairs, mocks, setMocks, extraVarsLayers,
 }) {
+  const { t } = useTranslation()
   const persisted = useMemo(() => loadResolverState(), [])
   // The Resolve and Flow tabs share the same content: the main editor buffer
   // (mainPlaybook) plus any dropped project files. Extra files take precedence
@@ -173,11 +175,10 @@ export default function ResolveView({
         )}
         <div>
           <p className="text-slate-300 font-mono text-sm">
-            {busy ? 'Reading project files…' : 'Drop an Ansible project folder'}
+            {busy ? t('resolveView.readingFiles') : t('resolveView.dropProjectFolder')}
           </p>
           <p className="text-slate-500 font-mono text-[11px] mt-1 max-w-md">
-            inventory · group_vars/ · host_vars/ · roles/ · vendored collections — structure is preserved
-            so every variable resolves through Ansible precedence.
+            {t('resolveView.dropProjectHint')}
           </p>
           {importError && (
             <p className="text-red-400 font-mono text-[11px] mt-2 flex items-center justify-center gap-1.5">
@@ -191,7 +192,7 @@ export default function ResolveView({
           onError={setClickError}
           onBusyChange={setClickBusy}
         />
-        <p className="text-slate-600 font-mono text-[10px]">…or drop a folder / .zip anywhere here</p>
+        <p className="text-slate-600 font-mono text-[10px]">{t('resolveView.orDropAnywhere')}</p>
       </div>
     )
   }
@@ -207,17 +208,16 @@ export default function ResolveView({
           <div className="flex items-start gap-1.5 rounded border border-amber-900/50 bg-amber-950/10 px-2.5 py-1.5 text-[10px] font-mono text-amber-300/90">
             <AlertTriangle size={11} className="mt-px shrink-0" />
             <span className="flex-1">
-              No inventory in this project — resolving against a synthetic <span className="text-amber-200">example-host</span> derived
-              from the playbook&apos;s <code className="text-amber-200">hosts:</code>. Add an inventory (drop a folder, or add an
-              <code className="text-amber-200"> inventory</code> file) to resolve real group_vars / host_vars.
+              {t('resolveView.noInventoryPrefix')} <span className="text-amber-200">example-host</span> {t('resolveView.noInventoryMid')} <code className="text-amber-200">hosts:</code>{t('resolveView.noInventorySuffix')}
+              <code className="text-amber-200"> inventory</code> {t('resolveView.noInventoryEnd')}
               {onOpenLimits && (
                 <>
-                  {' '}Just want to test a single inventory file?{' '}
+                  {' '}{t('resolveView.wantTestSingle')}{' '}
                   <button
                     onClick={onOpenLimits}
                     className="inline-flex items-center gap-1 text-emerald-300 hover:text-emerald-200 underline underline-offset-2"
                   >
-                    <FlaskConical size={10} /> Open Limits Lab
+                    <FlaskConical size={10} /> {t('app.landing.openLimits')}
                   </button>
                 </>
               )}
@@ -231,25 +231,25 @@ export default function ResolveView({
                 options={invCandidates} getValue={(o) => o.path} getLabel={(o) => o.path} />
             ) : (
               <span className="flex items-center gap-1.5 rounded border border-slate-800 bg-slate-900 px-2 py-1 text-[11px] font-mono text-slate-500">
-                <Server size={12} /> synthetic inventory
+                <Server size={12} /> {t('resolveView.syntheticInventory')}
               </span>
             )}
             <Select icon={Server} value={host} onChange={onHostChange} options={hosts}
-              placeholder={hosts.length ? undefined : 'no hosts'} />
+              placeholder={hosts.length ? undefined : t('resolveView.noHosts')} />
           </div>
           <div className="flex-1" />
           {resolution && (
             <div data-tour="resolver-actions" className="flex items-center gap-2">
               <button
                 onClick={() => onUseInFlow?.(handoffContext())}
-                title="Load this host's resolved vars into the Flow view"
+                title={t('resolveView.useInFlowTitle')}
                 className="flex items-center gap-1.5 px-2 py-1 rounded border border-slate-700 text-[11px] font-mono text-slate-400 hover:text-cyan-300 hover:border-cyan-700 transition-all"
               >
-                <ArrowRightLeft size={12} /> Use in Flow
+                <ArrowRightLeft size={12} /> {t('resolveView.useInFlow')}
               </button>
               <button
                 onClick={() => onOpenInJinja2?.(handoffContext())}
-                title="Load this host's resolved vars into the Jinja2 sandbox"
+                title={t('resolveView.useInJinja2Title')}
                 className="flex items-center gap-1.5 px-2 py-1 rounded border border-slate-700 text-[11px] font-mono text-slate-400 hover:text-violet-300 hover:border-violet-700 transition-all"
               >
                 <Zap size={12} /> Jinja2
@@ -262,14 +262,14 @@ export default function ResolveView({
         {resolution && (
           <div data-tour="resolver-groups" className="flex flex-wrap items-center gap-1.5">
             <Users size={11} className="text-emerald-500" />
-            <span className="text-[10px] font-mono text-slate-500">groups:</span>
-            {resolution.hostGroups.length === 0 && <span className="text-[10px] font-mono text-slate-600 italic">all only</span>}
+            <span className="text-[10px] font-mono text-slate-500">{t('resolveView.groupsLabel')}</span>
+            {resolution.hostGroups.length === 0 && <span className="text-[10px] font-mono text-slate-600 italic">{t('resolveView.allOnly')}</span>}
             {resolution.hostGroups.map((g) => (
               <span key={g} className="text-[10px] font-mono px-1.5 py-px rounded-full bg-slate-900 border border-slate-800 text-emerald-300">{g}</span>
             ))}
             {resolution.plays.length > 0 && (
               <>
-                <span className="ml-2 text-[10px] font-mono text-slate-500">plays:</span>
+                <span className="ml-2 text-[10px] font-mono text-slate-500">{t('resolveView.playsLabel')}</span>
                 {resolution.plays.map((p, i) => (
                   <span key={i} className="text-[10px] font-mono px-1.5 py-px rounded-full bg-slate-900 border border-slate-800 text-cyan-300">{p}</span>
                 ))}
@@ -307,21 +307,21 @@ export default function ResolveView({
           <input
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            placeholder="search variable names…"
+            placeholder={t('resolveView.searchPlaceholder')}
             className="bg-transparent text-[11px] font-mono text-slate-200 outline-none w-full placeholder:text-slate-600"
           />
         </label>
         <label className="flex items-center gap-1.5 text-[10px] font-mono text-slate-400 cursor-pointer">
           <input type="checkbox" checked={referencedOnly} onChange={(e) => setReferencedOnly(e.target.checked)} />
-          referenced only
+          {t('resolveView.referencedOnly')}
         </label>
         <label className="flex items-center gap-1.5 text-[10px] font-mono text-slate-400 cursor-pointer">
           <input type="checkbox" checked={showFacts} onChange={(e) => setShowFacts(e.target.checked)} />
-          show facts
+          {t('resolveView.showFacts')}
         </label>
         {host && (
           <span className="text-[10px] font-mono text-slate-500 shrink-0">
-            {rows.length} variable{rows.length === 1 ? '' : 's'}
+            {t('resolveView.variableCount', { count: rows.length })}
           </span>
         )}
       </div>
@@ -332,19 +332,19 @@ export default function ResolveView({
         <div className="flex-1 min-w-0 overflow-auto" data-tour="resolver-table">
           {!host ? (
             <div className="h-full flex items-center justify-center text-slate-600 text-xs font-mono px-6 text-center">
-              No hosts in this inventory.
+              {t('resolveView.noHostsInInventory')}
             </div>
           ) : rows.length === 0 ? (
             <div className="h-full flex items-center justify-center text-slate-600 text-xs font-mono px-6 text-center">
-              No variables match. {referencedOnly && 'Try turning off "referenced only".'}
+              {t('resolveView.noVariablesMatch')} {referencedOnly && t('resolveView.tryTurningOffReferenced')}
             </div>
           ) : (
             <table className="w-full border-collapse">
               <thead className="sticky top-0 bg-slate-950 z-10">
                 <tr className="text-[9px] font-mono uppercase tracking-widest text-slate-600 text-left">
-                  <th className="px-3 py-2 font-medium">Variable</th>
-                  <th className="px-3 py-2 font-medium">Value</th>
-                  <th className="px-3 py-2 font-medium">Winning source</th>
+                  <th className="px-3 py-2 font-medium">{t('resolveView.columnVariable')}</th>
+                  <th className="px-3 py-2 font-medium">{t('resolveView.columnValue')}</th>
+                  <th className="px-3 py-2 font-medium">{t('resolveView.columnWinningSource')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -362,7 +362,7 @@ export default function ResolveView({
                       <td className="px-3 py-1.5 align-top">
                         <span className={`text-[11px] font-mono ${referenced.has(name) ? 'text-cyan-300' : 'text-slate-300'}`}>{name}</span>
                         {shadowed > 0 && (
-                          <span className="ml-1.5 text-[9px] font-mono text-amber-600" title={`${shadowed} shadowed value(s)`}>+{shadowed}</span>
+                          <span className="ml-1.5 text-[9px] font-mono text-amber-600" title={t('resolveView.shadowedValues', { count: shadowed })}>+{shadowed}</span>
                         )}
                       </td>
                       <td className="px-3 py-1.5 align-top max-w-[280px]">
@@ -400,7 +400,7 @@ export default function ResolveView({
             {!selInfo ? (
               <div className="h-full flex flex-col items-center justify-center gap-2 text-slate-700 px-6 text-center">
                 <Variable size={26} />
-                <p className="text-[11px] font-mono">Select a variable to see its precedence stack.</p>
+                <p className="text-[11px] font-mono">{t('resolveView.selectVariableHint')}</p>
               </div>
             ) : (
               <StackBody selectedVar={selectedVar} selInfo={selInfo} renderCtx={renderCtx} />
@@ -413,7 +413,7 @@ export default function ResolveView({
       {isMobile && selInfo && createPortal(
         <>
           <button
-            aria-label="Close precedence stack"
+            aria-label={t('resolveView.closePrecedenceStack')}
             className="fixed inset-0 z-40 bg-black/50 backdrop-blur-[1px]"
             onClick={() => setSelectedVar(null)}
           />
@@ -421,7 +421,7 @@ export default function ResolveView({
             <div className="flex items-center gap-2 px-3 py-2.5 border-b border-slate-800 shrink-0 bg-slate-900">
               <Variable size={13} className="text-cyan-400 shrink-0" />
               <span className="text-[12px] font-mono font-semibold text-cyan-300 break-all flex-1">{selectedVar}</span>
-              <button onClick={() => setSelectedVar(null)} className="text-slate-500 hover:text-white p-1 rounded hover:bg-slate-800" title="Close">
+              <button onClick={() => setSelectedVar(null)} className="text-slate-500 hover:text-white p-1 rounded hover:bg-slate-800" title={t('resolveView.close')}>
                 <X size={15} />
               </button>
             </div>
@@ -438,6 +438,7 @@ export default function ResolveView({
 
 /** Shared precedence-stack body used by the desktop side panel and mobile drawer. */
 function StackBody({ selectedVar, selInfo, renderCtx, hideHeader = false }) {
+  const { t } = useTranslation()
   return (
     <div className="p-3">
       {!hideHeader && (
@@ -447,12 +448,12 @@ function StackBody({ selectedVar, selInfo, renderCtx, hideHeader = false }) {
         </div>
       )}
       <p className="text-[9px] font-mono uppercase tracking-widest text-slate-600 mb-2 flex items-center gap-1.5">
-        <span>precedence stack — {selInfo.stack.length} candidate{selInfo.stack.length !== 1 ? 's' : ''} (winner on top)</span>
+        <span>{t('resolveView.precedenceStackHeader', { count: selInfo.stack.length })}</span>
         <a
           href="https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable"
           target="_blank"
           rel="noopener noreferrer"
-          title="Official Ansible docs: variable precedence order"
+          title={t('resolveView.officialDocsTitle')}
           className="text-slate-600 hover:text-cyan-400 shrink-0"
         >
           <ExternalLink size={10} />
@@ -471,7 +472,7 @@ function StackBody({ selectedVar, selInfo, renderCtx, hideHeader = false }) {
                 {isWinner ? <ChevronRight size={11} className="text-emerald-400" /> : <span className="w-[11px]" />}
                 <LevelChip level={s.level} />
                 <span className="text-[10px] font-mono text-slate-300 truncate flex-1" title={s.source?.label}>{s.source?.label}</span>
-                {isWinner && <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-wider">wins</span>}
+                {isWinner && <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-wider">{t('resolveView.wins')}</span>}
               </div>
               <div className="pl-[20px] flex flex-col gap-0.5">
                 <span className={`text-[11px] font-mono break-all ${v.undef ? 'text-rose-400' : 'text-slate-200'}`}>{v.raw}</span>

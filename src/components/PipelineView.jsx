@@ -4,6 +4,7 @@
  * Shows: Input → Filter 1 → Filter 2 → … → Final Output.
  */
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ArrowDown, CheckCircle, AlertTriangle, Terminal,
   Layers, Zap, Info,
@@ -35,21 +36,23 @@ function formatValue(val) {
 }
 
 function StepBadge({ type }) {
+  const { t } = useTranslation()
   if (type === 'input') {
     return (
       <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-blue-900 text-blue-300 border border-blue-700 uppercase tracking-wider">
-        Input
+        {t('pipeline.input')}
       </span>
     )
   }
   return (
     <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-violet-900 text-violet-300 border border-violet-700 uppercase tracking-wider">
-      Filter
+      {t('pipeline.filter')}
     </span>
   )
 }
 
 function PipelineStep({ step, isLast }) {
+  const { t } = useTranslation()
   const hasError = !!step.error
 
   return (
@@ -87,7 +90,7 @@ function PipelineStep({ step, isLast }) {
         {/* Result */}
         <div className="rounded bg-slate-950 border border-slate-800 p-2 text-[11px] font-mono">
           <div className="text-slate-500 text-[9px] uppercase tracking-wider mb-1">
-            {isLast ? 'Final Output' : 'Intermediate Value'}
+            {isLast ? t('pipeline.finalOutput') : t('pipeline.intermediateValue')}
           </div>
           {hasError ? (
             <span className="text-red-400">{step.error}</span>
@@ -108,6 +111,7 @@ function PipelineStep({ step, isLast }) {
 }
 
 export default function PipelineView({ expression, facts }) {
+  const { t } = useTranslation()
   const steps = useMemo(() => {
     if (!expression || !expression.trim()) return []
     try {
@@ -123,7 +127,7 @@ export default function PipelineView({ expression, facts }) {
       <div className="h-full flex flex-col items-center justify-center gap-3 text-slate-600 p-6">
         <Layers size={32} />
         <p className="text-sm font-mono text-center">
-          Paste a Jinja2 expression like<br />
+          {t('pipeline.pasteHint')}<br />
           <code className="text-cyan-500">{'{{ groups["all"] | map(attribute="hostname") | sort | join(", ") }}'}</code>
         </p>
       </div>
@@ -133,7 +137,7 @@ export default function PipelineView({ expression, facts }) {
   if (steps.length === 0) {
     return (
       <div className="p-4 text-slate-500 text-sm font-mono">
-        Could not parse the expression.
+        {t('pipeline.couldNotParse')}
       </div>
     )
   }
@@ -147,10 +151,10 @@ export default function PipelineView({ expression, facts }) {
       <div className="px-4 py-3 border-b border-slate-700 flex items-center gap-2 shrink-0">
         <Zap size={14} className="text-violet-400" />
         <span className="text-violet-400 text-xs font-mono font-semibold uppercase tracking-widest">
-          Transformation Trace
+          {t('pipeline.title')}
         </span>
         <span className="ml-auto text-slate-500 text-[10px] font-mono">
-          {steps.length} step{steps.length !== 1 ? 's' : ''}
+          {t('pipeline.stepCount', { count: steps.length })}
         </span>
       </div>
 
@@ -175,7 +179,7 @@ export default function PipelineView({ expression, facts }) {
         <div className="px-4 py-2 border-t border-slate-700 bg-slate-900 flex items-center gap-2 shrink-0">
           <Info size={12} className="text-cyan-400" />
           <span className="text-cyan-400 text-xs font-mono">
-            Final:&nbsp;
+            {t('pipeline.finalLabel')}&nbsp;
           </span>
           <span className="text-cyan-300 text-xs font-mono truncate">
             {JSON.stringify(finalStep?.result)}

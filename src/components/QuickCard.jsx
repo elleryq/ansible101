@@ -4,6 +4,7 @@
  * Shows module, args, human explanation, warnings, and Jinja2 values.
  */
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Package, Terminal, FileCog, Activity, RefreshCw,
   Bell, AlertTriangle, CheckCircle, HelpCircle, Info,
@@ -61,6 +62,7 @@ function ArgRow({ label, value, facts }) {
 }
 
 export default function QuickCard({ task, facts }) {
+  const { t } = useTranslation()
   const module = useMemo(() => getModuleName(task), [task])
   const label = useMemo(() => getTaskLabel(task), [task])
   const { text, warning, icon } = useMemo(() => generateExplanation(task), [task])
@@ -70,12 +72,12 @@ export default function QuickCard({ task, facts }) {
   // Flatten module args for display
   const argEntries = useMemo(() => {
     if (!moduleArgs) return []
-    if (typeof moduleArgs === 'string') return [['cmd / value', moduleArgs]]
+    if (typeof moduleArgs === 'string') return [[t('quickCard.cmdOrValue'), moduleArgs]]
     if (typeof moduleArgs === 'object' && !Array.isArray(moduleArgs)) {
       return Object.entries(moduleArgs)
     }
-    return [['value', moduleArgs]]
-  }, [moduleArgs])
+    return [[t('quickCard.value'), moduleArgs]]
+  }, [moduleArgs, t])
 
   return (
     <div className="h-full flex flex-col overflow-hidden bg-slate-950">
@@ -83,7 +85,7 @@ export default function QuickCard({ task, facts }) {
       <div className="px-4 py-3 border-b border-slate-700 shrink-0 flex items-center gap-2">
         <Clipboard size={14} className="text-cyan-400" />
         <span className="text-cyan-400 text-xs font-mono font-semibold uppercase tracking-widest">
-          Quick Card
+          {t('quickCard.title')}
         </span>
       </div>
 
@@ -91,7 +93,7 @@ export default function QuickCard({ task, facts }) {
         {/* Task name */}
         {task.name && (
           <div>
-            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">Task Name</div>
+            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">{t('quickCard.taskName')}</div>
             <div className="text-white font-mono text-sm font-semibold">{task.name}</div>
           </div>
         )}
@@ -99,7 +101,7 @@ export default function QuickCard({ task, facts }) {
         {/* Module badge */}
         {module && (
           <div>
-            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">Module</div>
+            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">{t('quickCard.module')}</div>
             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-mono font-semibold ${colorClass}`}>
               {module}
             </span>
@@ -125,7 +127,7 @@ export default function QuickCard({ task, facts }) {
         {/* Module args */}
         {argEntries.length > 0 && (
           <div>
-            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-2">Arguments</div>
+            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-2">{t('quickCard.arguments')}</div>
             <div className="rounded border border-slate-700 bg-slate-900 px-3 divide-y divide-slate-800">
               {argEntries.map(([k, v]) => (
                 <ArgRow key={k} label={k} value={v} facts={facts} />
@@ -137,7 +139,7 @@ export default function QuickCard({ task, facts }) {
         {/* Conditionals */}
         {task.when && (
           <div>
-            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">Condition</div>
+            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">{t('quickCard.condition')}</div>
             <div className="rounded border border-amber-800 bg-amber-950 p-2">
               <code className="text-amber-300 text-xs font-mono">
                 {Array.isArray(task.when) ? task.when.join(' AND ') : task.when}
@@ -149,7 +151,7 @@ export default function QuickCard({ task, facts }) {
         {/* Loop */}
         {(task.loop || task.with_items) && (
           <div>
-            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">Loop Items</div>
+            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">{t('quickCard.loopItems')}</div>
             <div className="rounded border border-violet-800 bg-violet-950 p-2 flex items-start gap-2">
               <RefreshCw size={12} className="text-violet-400 mt-0.5 shrink-0" />
               <code className="text-violet-300 text-xs font-mono">
@@ -162,7 +164,7 @@ export default function QuickCard({ task, facts }) {
         {/* Notify */}
         {task.notify && (
           <div>
-            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">Notifies Handler</div>
+            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">{t('quickCard.notifiesHandler')}</div>
             <div className="rounded border border-amber-700 bg-amber-950 p-2 flex items-center gap-2">
               <Bell size={12} className="text-amber-400" />
               <code className="text-amber-300 text-xs font-mono">
@@ -176,7 +178,7 @@ export default function QuickCard({ task, facts }) {
         {task.register && (
           <div className="flex items-center gap-2 text-slate-400 text-xs font-mono">
             <Info size={11} />
-            Result stored in variable: <code className="text-cyan-300">{task.register}</code>
+            {t('quickCard.resultStoredIn')} <code className="text-cyan-300">{task.register}</code>
           </div>
         )}
       </div>

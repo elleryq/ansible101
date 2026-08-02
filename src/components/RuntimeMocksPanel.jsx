@@ -7,6 +7,7 @@
  */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Zap, ChevronDown, ChevronRight } from 'lucide-react'
 import { LEVEL_LABEL } from '../lib/precedence'
 
@@ -17,6 +18,7 @@ const KIND_COLOR = {
 }
 
 export default function RuntimeMocksPanel({ runtimeVars = [], mocks = {}, onMockChange, defaultCollapsed = false }) {
+  const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
   if (runtimeVars.length === 0) return null
 
@@ -28,9 +30,9 @@ export default function RuntimeMocksPanel({ runtimeVars = [], mocks = {}, onMock
       >
         {collapsed ? <ChevronRight size={13} /> : <ChevronDown size={13} />}
         <Zap size={13} />
-        Runtime Vars
+        {t('runtimeMocks.title')}
         <span className="ml-1 normal-case font-normal tracking-normal text-slate-500">
-          ({runtimeVars.length} detected — values only known at runtime)
+          {t('runtimeMocks.detected', { count: runtimeVars.length })}
         </span>
       </button>
 
@@ -47,7 +49,7 @@ export default function RuntimeMocksPanel({ runtimeVars = [], mocks = {}, onMock
               <input
                 value={mocks[rv.name] ?? ''}
                 onChange={(e) => onMockChange(rv.name, e.target.value)}
-                placeholder={rv.default !== undefined ? String(rv.default) : 'mock value…'}
+                placeholder={rv.default !== undefined ? String(rv.default) : t('runtimeMocks.mockValuePlaceholder')}
                 className="flex-1 min-w-0 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] font-mono text-slate-200 outline-none focus:border-amber-600 placeholder:text-slate-600"
               />
             </div>

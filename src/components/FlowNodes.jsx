@@ -4,6 +4,7 @@
  */
 import React from 'react'
 import { Handle, Position } from 'reactflow'
+import { useTranslation } from 'react-i18next'
 import {
   Package, Terminal, FileCog, Activity, RefreshCw,
   Bell, Layers, HelpCircle, SkipForward,
@@ -35,6 +36,7 @@ const handleStyle = {
 // Play Node — blue header card
 // ────────────────────────────────────────────────────────────────
 export function PlayNode({ data, selected }) {
+  const { t } = useTranslation()
   return (
     <div
       className={`rounded-lg border-2 px-4 py-3 min-w-[220px] shadow-lg transition-all
@@ -47,13 +49,13 @@ export function PlayNode({ data, selected }) {
       <Handle type="source" position={Position.Bottom} style={handleStyle} />
       <div className="flex items-center gap-2">
         <Layers size={16} className="text-blue-400" />
-        <span className="text-blue-300 text-xs font-semibold uppercase tracking-widest">Play</span>
+        <span className="text-blue-300 text-xs font-semibold uppercase tracking-widest">{t('flowNodes.play')}</span>
       </div>
       <div className="mt-1 text-white font-mono font-semibold text-sm truncate">
         {data.label}
       </div>
       {data.hosts && (
-        <div className="text-blue-400 text-xs mt-0.5">hosts: {data.hosts}</div>
+        <div className="text-blue-400 text-xs mt-0.5">{t('flowNodes.hostsLabel')} {data.hosts}</div>
       )}
     </div>
   )
@@ -63,6 +65,7 @@ export function PlayNode({ data, selected }) {
 // Task Node — rectangular card
 // ────────────────────────────────────────────────────────────────
 export function TaskNode({ data, selected }) {
+  const { t } = useTranslation()
   const isWarn = data.module === 'shell' || data.module === 'command'
   return (
     <div
@@ -91,7 +94,7 @@ export function TaskNode({ data, selected }) {
           <span className="text-xs text-slate-400 font-mono">{data.module}</span>
         )}
         {isWarn && (
-          <span title="Non-idempotent" className="ml-auto text-amber-400 text-xs">⚠</span>
+          <span title={t('flowNodes.nonIdempotent')} className="ml-auto text-amber-400 text-xs">⚠</span>
         )}
       </div>
       <div className="mt-1 text-white text-xs font-mono leading-tight truncate" title={data.label}>
@@ -105,6 +108,7 @@ export function TaskNode({ data, selected }) {
 // Loop Node — task with a "repeat" badge
 // ────────────────────────────────────────────────────────────────
 export function LoopNode({ data, selected }) {
+  const { t } = useTranslation()
   const loopRaw = data.task?.loop ?? data.task?.with_items
   const loopCount = Array.isArray(loopRaw) ? loopRaw.length : null
   return (
@@ -189,6 +193,7 @@ export function ConditionalNode({ data, selected }) {
 // Skip Node — grey pill shown on False branch
 // ────────────────────────────────────────────────────────────────
 export function SkipNode({ selected }) {
+  const { t } = useTranslation()
   return (
     <div
       className={`rounded-full border px-4 py-1 text-xs text-slate-400 font-mono
@@ -198,7 +203,7 @@ export function SkipNode({ selected }) {
       <Handle type="target" position={Position.Top} style={handleStyle} />
       <Handle type="source" position={Position.Bottom} style={handleStyle} />
       <SkipForward size={12} className="inline mr-1" />
-      skip
+      {t('flowNodes.skip')}
     </div>
   )
 }
@@ -219,6 +224,7 @@ export function MergeNode() {
 // End Node — terminator capping the end of a play's task chain
 // ────────────────────────────────────────────────────────────────
 export function EndNode({ data, selected }) {
+  const { t } = useTranslation()
   return (
     <div
       className={`flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono transition-all
@@ -228,7 +234,7 @@ export function EndNode({ data, selected }) {
       <Handle type="target" position={Position.Top} style={handleStyle} />
       <CheckCircle2 size={11} className="text-slate-500" />
       <span className="text-[9px] uppercase tracking-widest text-slate-500">
-        {data?.label || 'End'}
+        {data?.label || t('flowNodes.end')}
       </span>
     </div>
   )
@@ -278,11 +284,12 @@ export function SectionNode({ data }) {
 // Include Node — prominent folder-tab header for a resolved include
 // ────────────────────────────────────────────────────────────────
 export function IncludeNode({ data, selected }) {
+  const { t } = useTranslation()
   const parts = data.label ? data.label.split('/') : [data.label]
   const base = parts.pop()
   const dir = parts.length ? parts.join('/') + '/' : ''
   const countLabel = data.taskCount != null
-    ? `${data.taskCount} task${data.taskCount === 1 ? '' : 's'}`
+    ? t('flowNodes.taskCount', { count: data.taskCount })
     : null
   return (
     <div
@@ -326,6 +333,7 @@ export function GroupBgNode() {
 // Missing File Node — orange dashed placeholder for unresolved includes
 // ────────────────────────────────────────────────────────────────
 export function MissingFileNode({ data, selected }) {
+  const { t } = useTranslation()
   const parts = data.label ? data.label.split('/') : [data.label]
   const base = parts.pop()
   const dir = parts.length ? parts.join('/') + '/' : ''
@@ -337,12 +345,12 @@ export function MissingFileNode({ data, selected }) {
     ? { border: selected ? 'border-cyan-400 bg-teal-950/60' : 'border-teal-700/70 bg-teal-950/40', icon: 'text-teal-500', dir: 'text-teal-700', label: 'text-teal-300', dot: 'bg-teal-600', text: 'text-teal-700' }
     : { border: selected ? 'border-cyan-400 bg-orange-950/60' : 'border-orange-700/70 bg-orange-950/40', icon: 'text-orange-500', dir: 'text-orange-700', label: 'text-orange-300', dot: 'bg-orange-600', text: 'text-orange-700' }
   const footer = data.cycle
-    ? 'circular include — already expanded above'
+    ? t('flowNodes.missingFile.circular')
     : data.depthLimited
-      ? 'nested too deep to expand further — file is in your workspace'
+      ? t('flowNodes.missingFile.tooDeep')
       : data.dynamic
-        ? 'computed at runtime — can\'t resolve statically'
-        : 'file not in workspace — add to expand'
+        ? t('flowNodes.missingFile.dynamic')
+        : t('flowNodes.missingFile.notInWorkspace')
   return (
     <div
       style={{ minWidth: 220 }}

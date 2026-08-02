@@ -4,10 +4,12 @@
  * Dry-Run evaluation and Jinja2 rendering.
  */
 import React, { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Database, RefreshCw, AlertCircle, ChevronDown, ChevronRight } from 'lucide-react'
 import { DEFAULT_FACTS } from '../lib/defaultFacts'
 
 export default function MockContextPanel({ facts, onFactsChange, defaultCollapsed = false }) {
+  const { t } = useTranslation()
   const [jsonText, setJsonText] = useState(() => JSON.stringify(facts, null, 2))
   const [jsonError, setJsonError] = useState(null)
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
@@ -39,7 +41,7 @@ export default function MockContextPanel({ facts, onFactsChange, defaultCollapse
       >
         {collapsed ? <ChevronRight size={13} /> : <ChevronDown size={13} />}
         <Database size={13} />
-        Mock Facts
+        {t('mockContext.title')}
         {jsonError && (
           <AlertCircle size={12} className="ml-auto text-red-400" title={jsonError} />
         )}
@@ -72,11 +74,11 @@ export default function MockContextPanel({ facts, onFactsChange, defaultCollapse
             ))}
             <button
               onClick={handleReset}
-              title="Reset to defaults"
+              title={t('mockContext.resetTitle')}
               className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono border border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-500 transition-all"
             >
               <RefreshCw size={10} />
-              Reset
+              {t('mockContext.reset')}
             </button>
           </div>
 

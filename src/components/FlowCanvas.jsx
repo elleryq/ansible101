@@ -4,6 +4,7 @@
  * node click -> parent callback for sync-highlight.
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import ReactFlow, {
   Background,
   Controls,
@@ -26,6 +27,7 @@ export default function FlowCanvas({
   onExportMermaid,
   onExportUml,
 }) {
+  const { t } = useTranslation()
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCompact, setIsCompact] = useState(() => globalThis.innerWidth < 768)
   const menuRef = useRef(null)
@@ -109,12 +111,12 @@ export default function FlowCanvas({
             setMenuOpen((v) => !v)
           }}
           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-slate-700 bg-slate-900 text-slate-300 hover:border-cyan-700 hover:text-cyan-300 text-xs font-mono transition-all shadow-lg"
-          title="Export diagram"
+          title={t('flowCanvas.exportDiagram')}
           aria-haspopup="menu"
           aria-expanded={menuOpen}
         >
           <Download size={12} />
-          Export
+          {t('flowCanvas.export')}
         </button>
 
         {menuOpen && (

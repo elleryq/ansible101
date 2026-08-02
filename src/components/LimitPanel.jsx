@@ -5,6 +5,7 @@
  * the play's hosts: pattern + the user-supplied --limit flag.
  */
 import React, { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Filter, ChevronDown, ChevronRight, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react'
 import { applyLimit } from '../lib/ansibleLimit'
 
@@ -27,6 +28,7 @@ function HostBadge({ name, matched }) {
 }
 
 function PlayLimitRow({ play, inventory, limit }) {
+  const { t } = useTranslation()
   const { playHosts, limitedHosts, skipped } = useMemo(
     () => applyLimit(play.hosts, limit, inventory),
     [play.hosts, limit, inventory]
@@ -52,23 +54,23 @@ function PlayLimitRow({ play, inventory, limit }) {
       {/* Play name + hosts pattern */}
       <div className="flex items-center gap-2 mb-1.5">
         <span className="text-blue-400 font-mono font-semibold truncate">
-          {play.name || play.hosts || 'Play'}
+          {play.name || play.hosts || t('limitPanel.playFallback')}
         </span>
-        <span className="text-slate-600 font-mono text-[10px] shrink-0">hosts: {play.hosts || 'all'}</span>
+        <span className="text-slate-600 font-mono text-[10px] shrink-0">{t('limitPanel.hostsLabel')} {play.hosts || 'all'}</span>
         {skipped && hasLimit && (
           <span className="ml-auto flex items-center gap-1 text-red-400 text-[10px] font-mono shrink-0">
             <AlertTriangle size={10} />
-            skipped
+            {t('limitPanel.skipped')}
           </span>
         )}
         {!skipped && hasLimit && (
           <span className="ml-auto text-emerald-400 text-[10px] font-mono shrink-0">
-            {limitedHosts.size} / {playHosts.size} host{playHosts.size !== 1 ? 's' : ''}
+            {t('limitPanel.matchedCount', { matched: limitedHosts.size, total: playHosts.size, count: playHosts.size })}
           </span>
         )}
         {!hasLimit && (
           <span className="ml-auto text-slate-500 text-[10px] font-mono shrink-0">
-            {playHosts.size} host{playHosts.size !== 1 ? 's' : ''}
+            {t('inventoryLab.editor.hostCount', { count: playHosts.size })}
           </span>
         )}
       </div>
@@ -77,7 +79,7 @@ function PlayLimitRow({ play, inventory, limit }) {
       <div className="flex flex-wrap gap-1">
         {allKnown.length === 0 && (
           <span className="text-slate-600 italic text-[10px]">
-            No hosts in inventory — add some in Mock Facts → groups
+            {t('limitPanel.noHostsInInventory')}
           </span>
         )}
         {playHostList.map((host) => (
@@ -89,7 +91,7 @@ function PlayLimitRow({ play, inventory, limit }) {
         ))}
         {allKnown.length > 0 && playHostList.length === 0 && (
           <span className="text-slate-600 italic text-[10px]">
-            No hosts match the play pattern "{play.hosts}"
+            {t('limitPanel.noHostsMatchPattern', { pattern: play.hosts })}
           </span>
         )}
       </div>
@@ -98,6 +100,7 @@ function PlayLimitRow({ play, inventory, limit }) {
 }
 
 export default function LimitPanel({ plays, facts, limit, onLimitChange }) {
+  const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(false)
 
   const inventory = useMemo(() => facts?.groups || {}, [facts])
@@ -117,9 +120,9 @@ export default function LimitPanel({ plays, facts, limit, onLimitChange }) {
       >
         {collapsed ? <ChevronRight size={13} /> : <ChevronDown size={13} />}
         <Filter size={13} />
-        --limit Tester
+        {t('limitPanel.title')}
         <span className="ml-1 text-slate-500 normal-case font-normal tracking-normal">
-          ({allHostCount} host{allHostCount !== 1 ? 's' : ''} in inventory)
+          {t('limitPanel.hostCountInInventory', { count: allHostCount })}
         </span>
       </button>
 
@@ -132,7 +135,7 @@ export default function LimitPanel({ plays, facts, limit, onLimitChange }) {
               type="text"
               value={limit}
               onChange={(e) => onLimitChange(e.target.value)}
-              placeholder="e.g. web_servers:!web-02  or  web*  or  all"
+              placeholder={t('limitPanel.limitPlaceholder')}
               className="flex-1 bg-slate-900 border border-slate-700 focus:border-emerald-600
                 rounded px-2 py-1 text-[11px] font-mono text-slate-200
                 outline-none transition-colors placeholder:text-slate-600"
@@ -142,7 +145,7 @@ export default function LimitPanel({ plays, facts, limit, onLimitChange }) {
                 onClick={() => onLimitChange('')}
                 className="text-[10px] font-mono text-slate-500 hover:text-slate-300 transition-colors shrink-0"
               >
-                clear
+                {t('inventoryLab.limitTester.clear')}
               </button>
             )}
           </div>
@@ -151,10 +154,10 @@ export default function LimitPanel({ plays, facts, limit, onLimitChange }) {
           {!limit && (
             <div className="mb-2 flex flex-wrap gap-1.5">
               {[
-                { label: 'web*', desc: 'wildcard' },
-                { label: 'g1:g2', desc: 'union' },
-                { label: 'g1:&g2', desc: 'intersect' },
-                { label: 'g1:!g2', desc: 'exclude' },
+                { label: 'web*', desc: t('limitPanel.cheatWildcard') },
+                { label: 'g1:g2', desc: t('limitPanel.cheatUnion') },
+                { label: 'g1:&g2', desc: t('limitPanel.cheatIntersect') },
+                { label: 'g1:!g2', desc: t('limitPanel.cheatExclude') },
               ].map(({ label, desc }) => (
                 <button
                   key={label}

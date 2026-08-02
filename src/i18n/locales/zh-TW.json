@@ -1,0 +1,523 @@
+{
+  "common": {
+    "footerDisclaimer": "Ansible101 是一個獨立的社群工具 — 與 Red Hat, Inc. 沒有任何關聯、非其背書，亦非其贊助。Ansible® 為 Red Hat, LLC 的註冊商標，已在美國及其他國家完成註冊。",
+    "landingDisclaimer": "Ansible101 是一個獨立的社群工具，與 Red Hat, Inc. 沒有任何關聯、非其背書，亦非其贊助。Ansible® 為 Red Hat, LLC 的註冊商標，已在美國及其他國家完成註冊。"
+  },
+  "app": {
+    "loadingSession": "正在載入工作階段…",
+    "toolbar": {
+      "moreActions": "更多操作",
+      "varsTitle": "切換 Playbook 變數面板",
+      "vars": "變數",
+      "factsTitle": "切換模擬 Facts 面板",
+      "facts": "Facts",
+      "about": "關於",
+      "reset": "重設",
+      "tourTitle": "開始本頁導覽",
+      "tour": "導覽",
+      "shareTitle": "建立可分享連結",
+      "share": "分享",
+      "copied": "已複製！",
+      "shareTooLarge": "內容過大無法分享",
+      "sharingNote": "你的內容會自動儲存在此瀏覽器中。分享功能會建立一個把資料編碼進 URL hash 的連結 — 不會上傳到伺服器。非常大型的專案可能無法放進連結中。",
+      "sharingNoteAria": "分享隱私說明"
+    },
+    "editor": {
+      "dropFiles": "拖放檔案或 ZIP",
+      "dropFilesHint": "YAML · 指令碼 · 任何文字檔",
+      "paneJinja2": "Jinja2 表達式",
+      "paneSnippet": "Task 片段",
+      "panePlaybook": "Playbook YAML",
+      "resizeEditorFlow": "調整編輯器與流程圖面板大小",
+      "resizeFlowSidebar": "調整流程圖與側邊欄面板大小"
+    },
+    "tabs": {
+      "flow": "執行流程",
+      "resolve": "變數解析器",
+      "projectDetected": "已偵測到專案"
+    },
+    "emptyFlow": {
+      "syntaxError": "YAML 語法錯誤",
+      "lineColumn": "第 {{line}} 行，第 {{column}} 欄",
+      "fixHint": "修正編輯器中的錯誤以檢視流程圖",
+      "placeholder": "撰寫一個有效的 Ansible playbook 以檢視流程圖。"
+    },
+    "emptyQuickCard": {
+      "title": "Task Snippet 解析器",
+      "hintPart1": "貼上單一個 Ansible task —— 一個含有模組的",
+      "hintPart2": "區塊 —— 即可看到它的模組、參數、白話說明，以及任何",
+      "hintPart3": "值的即時渲染結果。",
+      "loadExample": "載入範例 task"
+    },
+    "landing": {
+      "tagline": "Ansible playbook 的視覺化偵錯器、邏輯解說器與 Jinja2 沙盒。",
+      "readingFiles": "正在讀取專案檔案…",
+      "pressBefore": "按下",
+      "pressAfter": "貼上",
+      "dragDropHint": "或拖放你的 YAML、task 片段、專案資料夾或 .zip 檔",
+      "noReadableFiles": "找不到可讀取的檔案 — 請確認壓縮檔沒有損毀或是空的。",
+      "couldntRead": "無法讀取這次拖放的內容：{{message}}",
+      "or": "或",
+      "loadSample": "載入範例 playbook",
+      "openLimits": "開啟 Limits Lab",
+      "loadDemoInventory": "載入示範 inventory 到 Limits",
+      "startTour": "開始導覽教學",
+      "aboutLegal": "關於 / 法律聲明"
+    }
+  },
+  "humanSidebar": {
+    "header": "白話邏輯",
+    "hostMismatch": {
+      "title": "主機「{{host}}」沒有被任何 play 鎖定",
+      "detail": "此 playbook 中沒有任何 play 符合所選主機所屬的群組 —— 在真實的 Ansible 中，這個 play 永遠不會對它執行。下方的變數值是盡力顯示的備援結果（play/role vars，而非該主機專屬的 group_vars/host_vars）；請在「變數解析器」分頁切換主機或 inventory 以取得真實結果。"
+    },
+    "playPrefix": "Play：",
+    "playFallback": "第 {{number}} 個 Play",
+    "selectedTask": "已選取的 Task",
+    "allTasks": "所有 Task",
+    "emptyState": "在編輯器中撰寫或貼上 Ansible playbook，即可在此看到說明。",
+    "condition": "條件：",
+    "loopCountPrefix": "迭代 {{count}} 個項目，作為",
+    "loopDynamicPrefix": "迭代一個動態解析的清單，作為",
+    "loopDynamicSuffix": "—— 無法靜態預覽項目內容。",
+    "loopMore": "還有 {{count}} 項",
+    "notifies": "通知：",
+    "alsoReferenced": "其他參照",
+    "notSetYet": "此階段尚未設定",
+    "neverResolves": "此主機永遠無法解析",
+    "neverResolvesTitle": "沒有任何來源（role defaults、group/host vars、play vars、set_fact 等）為所選主機定義此變數",
+    "ansibleDocs": "ansible 文件",
+    "missingFile": {
+      "circularTitle": "循環 Include",
+      "deepTitle": "巢狀層級過深的 Include",
+      "circularBody": "這個檔案已經是上方 include 鏈的一部分，再次展開會造成無窮迴圈。",
+      "deepBody": "這個 include 鏈巢狀層級非常深，為了避免流程圖失控，展開在此停止。",
+      "alreadyInWorkspace": "檔案本身已經在你的工作區中 —— 只是不會內嵌重繪：",
+      "referencedFrom": "參照自",
+      "dynamicTitle": "動態 Include",
+      "dynamicBody1": "這個目標是由一個 Jinja2 表達式計算得出",
+      "dynamicIn": "位於",
+      "dynamicBody2": "，因此取決於執行期的 facts/variables，無法靜態解析：",
+      "dynamicHint": "請加入它可能解析出的實際檔案（例如每個作業系統家族各一個），以便個別展開。",
+      "unresolvedTitle": "未解析的 Include",
+      "unresolvedBody": "這個 task 引用了一個尚未加入工作區的外部檔案",
+      "unresolvedBodyRef": "（參照自",
+      "toExpand": "要展開此節點：",
+      "step1Before": "點擊編輯器上方的",
+      "step1After": "按鈕",
+      "step2": "雙擊新分頁，將名稱重新命名為以下內容：",
+      "step3": "然後把你的 task 清單貼到該檔案的編輯器中。"
+    },
+    "include": {
+      "title": "已引用的檔案",
+      "bodyBefore": "Task 正從",
+      "bodyAfter": "。此卡片下方的節點顯示展開後的內容。"
+    }
+  },
+  "mockContext": {
+    "title": "模擬 Facts",
+    "resetTitle": "重設為預設值",
+    "reset": "重設"
+  },
+  "playVars": {
+    "title": "Playbook 變數",
+    "detected": "（偵測到 {{count}} 個）",
+    "resetTitle": "重設為 playbook 預設值",
+    "reset": "重設",
+    "definedInPlay": "已在 play vars 中定義",
+    "referencedNotDefined": "有被參照但未定義",
+    "playBadge": "play",
+    "valuePlaceholder": "值…"
+  },
+  "quickCard": {
+    "title": "Quick Card",
+    "cmdOrValue": "指令 / 值",
+    "value": "值",
+    "taskName": "Task 名稱",
+    "module": "模組",
+    "arguments": "參數",
+    "condition": "條件",
+    "loopItems": "迴圈項目",
+    "notifiesHandler": "通知的 Handler",
+    "resultStoredIn": "結果儲存於變數："
+  },
+  "pipeline": {
+    "input": "輸入",
+    "filter": "Filter",
+    "finalOutput": "最終輸出",
+    "intermediateValue": "中間值",
+    "pasteHint": "貼上一個 Jinja2 表達式，例如",
+    "couldNotParse": "無法解析此表達式。",
+    "title": "轉換追蹤",
+    "stepCount_other": "{{count}} 個步驟",
+    "finalLabel": "最終結果："
+  },
+  "fileExplorer": {
+    "filesLabel": "files",
+    "newFile": "新增檔案",
+    "newFileHere": "在此新增檔案",
+    "newFolder": "新增資料夾",
+    "newFolderHere": "在此新增資料夾",
+    "newFileBottom": "新增檔案",
+    "newFolderBottom": "新增資料夾",
+    "rename": "重新命名",
+    "remove": "移除",
+    "delete": "刪除",
+    "addFile": "新增檔案",
+    "ignore": "忽略",
+    "ignoreAllMissing": "忽略所有缺少的參照",
+    "showIgnoredAgain": "重新顯示已忽略的缺少參照",
+    "collapse": "收合",
+    "expand": "展開",
+    "yamlError": "YAML 錯誤",
+    "clickForDetails": "點擊以查看詳情與選項",
+    "invalidPath": "無效的路徑",
+    "nameExists": "已經有同名的檔案存在",
+    "missingRef": {
+      "inFile": "（於 {{file}}）",
+      "roleUsedIn": "在 play「{{play}}」中使用的 role{{from}}。Ansible 會在 roles/{{role}}/tasks/main.yml 尋找它。",
+      "referencedViaTask": "透過 {{kind}} 在 task「{{task}}」中參照{{from}}。",
+      "referencedVia": "透過 {{kind}} 參照{{from}}。",
+      "notFound": "這個 playbook 有參照到，但在此專案中找不到。"
+    }
+  },
+  "fileTabBar": {
+    "addFileTitle": "新增檔案 — 命名時請對應 include_tasks 或 roles/name/tasks/main.yml 的參照",
+    "addFile": "新增檔案",
+    "removeFile": "移除檔案"
+  },
+  "importControls": {
+    "chooseFolder": "選擇資料夾",
+    "chooseZip": "選擇 .zip",
+    "noFilesInFolder": "在該資料夾中找不到可讀取的檔案。",
+    "couldntReadFolder": "無法讀取該資料夾：{{message}}",
+    "noFilesInZip": "找不到可讀取的檔案 — 請確認壓縮檔沒有損毀或是空的。",
+    "couldntReadZip": "無法讀取該 zip 檔：{{message}}"
+  },
+  "resolveView": {
+    "readingFiles": "正在讀取專案檔案…",
+    "dropProjectFolder": "拖放一個 Ansible 專案資料夾",
+    "dropProjectHint": "inventory · group_vars/ · host_vars/ · roles/ · 已下載的 collections — 結構會被保留，讓每個變數都能透過 Ansible 優先權解析。",
+    "orDropAnywhere": "……或在此處任意位置拖放資料夾 / .zip",
+    "noInventoryPrefix": "此專案中沒有 inventory — 正在對照一個合成的",
+    "noInventoryMid": "主機進行解析，該主機衍生自 playbook 的",
+    "noInventorySuffix": "。加入一個 inventory（拖放資料夾，或加入一個",
+    "noInventoryEnd": "檔案）即可解析真實的 group_vars / host_vars。",
+    "wantTestSingle": "只是想測試單一 inventory 檔案？",
+    "syntheticInventory": "合成 inventory",
+    "noHosts": "沒有主機",
+    "useInFlowTitle": "將此主機已解析的變數載入 Flow 檢視",
+    "useInFlow": "用於 Flow",
+    "useInJinja2Title": "將此主機已解析的變數載入 Jinja2 沙盒",
+    "groupsLabel": "群組：",
+    "allOnly": "僅 all",
+    "playsLabel": "plays：",
+    "searchPlaceholder": "搜尋變數名稱…",
+    "referencedOnly": "僅顯示有被參照的",
+    "showFacts": "顯示 facts",
+    "variableCount_other": "{{count}} 個變數",
+    "noHostsInInventory": "此 inventory 中沒有主機。",
+    "noVariablesMatch": "沒有符合的變數。",
+    "tryTurningOffReferenced": "試著關閉「僅顯示有被參照的」。",
+    "columnVariable": "變數",
+    "columnValue": "值",
+    "columnWinningSource": "勝出來源",
+    "shadowedValues_other": "{{count}} 個被覆蓋的值",
+    "selectVariableHint": "選擇一個變數以檢視其優先權堆疊。",
+    "closePrecedenceStack": "關閉優先權堆疊",
+    "close": "關閉",
+    "precedenceStackHeader_other": "優先權堆疊 — {{count}} 個候選值（勝出者在最上方）",
+    "officialDocsTitle": "Ansible 官方文件：變數優先權順序",
+    "wins": "勝出"
+  },
+  "extraVars": {
+    "title": "Extra Vars (-e)",
+    "alwaysWinsCount": "永遠勝出 · 已設定 {{count}} 個",
+    "remove": "移除",
+    "selectVarsFile": "選擇一個 vars 檔案…",
+    "add": "加入",
+    "keyPlaceholder": "鍵",
+    "valuePlaceholder": "值",
+    "addPair": "新增一組"
+  },
+  "runtimeMocks": {
+    "title": "Runtime Vars",
+    "detected": "（偵測到 {{count}} 個 — 值僅在執行期才會知道）",
+    "mockValuePlaceholder": "模擬值…"
+  },
+  "inventoryLab": {
+    "importModal": {
+      "title": "匯入 Inventory",
+      "detected": "偵測到",
+      "inventoryWith": "格式的 inventory，包含",
+      "and": "與",
+      "groupCount_other": "{{count}} 個群組",
+      "hostCount_other": "{{count}} 個不重複主機",
+      "whatToDo": "你想如何處理現有的 inventory？",
+      "replace": "取代",
+      "append": "附加",
+      "cancel": "取消"
+    },
+    "groupRow": {
+      "removeGroup": "移除群組",
+      "noHosts": "沒有主機",
+      "hostnamePlaceholder": "主機名稱…",
+      "add": "加入",
+      "hostCount_other": "{{count}} 個主機"
+    },
+    "editor": {
+      "dropInventoryFile": "拖放 inventory 檔案",
+      "title": "Inventory",
+      "hostCount_other": "{{count}} 個主機",
+      "useInPlaybookTitle": "把這個 inventory 加入 Playbook 專案，讓它能解析真實的 group_vars/host_vars",
+      "useInPlaybook": "用於 Playbook",
+      "uploadTitle": "上傳 inventory 檔案",
+      "import": "匯入",
+      "reset": "重設",
+      "exportFrom": "從 Ansible 匯出：",
+      "copyCommandTitle": "複製指令",
+      "copied": "已複製",
+      "copy": "複製",
+      "thenPart": "接著",
+      "pastePart": "貼上 ·",
+      "dragPart": "拖放 · 或點擊「匯入」— 支援 JSON、INI 與 YAML",
+      "couldNotParse": "無法解析此 inventory。",
+      "newGroupPlaceholder": "新群組名稱…",
+      "addGroup": "新增群組"
+    },
+    "hostDetail": {
+      "closeTitle": "關閉 (Esc)",
+      "memberOf": "所屬群組",
+      "noGroups": "沒有群組",
+      "addToLimitTitle": "將「{{group}}」加入 limit 篩選",
+      "hostVariables": "主機變數",
+      "noVariablesPrefix": "沒有變數 — 匯入 JSON 格式的 inventory 即可看到",
+      "copyValueTitle": "複製值",
+      "closeHostDetails": "關閉主機詳情"
+    },
+    "limitInput": {
+      "placeholder": "例如 web:&production 或 web-0* 或 all:!staging"
+    },
+    "limitTester": {
+      "clickToViewAttrs": "點擊以檢視主機屬性",
+      "title": "--limit 測試器",
+      "matchedCount_other": "{{matched}} / {{total}} 個主機符合",
+      "limitPatternLabel": "Limit Pattern",
+      "clear": "清除",
+      "noHostsMatch": "沒有主機符合此模式 — 該 play 會被完全跳過。",
+      "examplesAndSyntax": "範例與 Pattern 語法",
+      "syntaxUnion": "聯集 — 任一群組中的主機",
+      "syntaxIntersection": "交集 — 同時在兩個群組中的主機",
+      "syntaxDifference": "差集 — 在 group1 但不在 group2 中",
+      "syntaxWildcard": "萬用字元 — fnmatch 風格的 glob",
+      "syntaxAll": "inventory 中的每一台主機",
+      "syntaxComma": "以逗號分隔的明確主機清單",
+      "groupsHeader": "群組",
+      "empty": "空的",
+      "groupMatched": "{{matched}}/{{total}} 個符合",
+      "examples": {
+        "singleGroup": "單一群組",
+        "union": "聯集",
+        "intersection": "交集",
+        "excludeGroup": "排除群組",
+        "wildcard": "萬用字元",
+        "commaList": "逗號清單"
+      }
+    }
+  },
+  "limitPanel": {
+    "playFallback": "Play",
+    "hostsLabel": "hosts：",
+    "skipped": "已跳過",
+    "matchedCount_other": "{{matched}} / {{total}} 個主機",
+    "noHostsInInventory": "inventory 中沒有主機 — 到 Mock Facts → groups 新增一些",
+    "noHostsMatchPattern": "沒有主機符合這個 play pattern「{{pattern}}」",
+    "title": "--limit 測試器",
+    "hostCountInInventory_other": "（inventory 中有 {{count}} 個主機）",
+    "limitPlaceholder": "例如 web_servers:!web-02 或 web* 或 all",
+    "cheatWildcard": "萬用字元",
+    "cheatUnion": "聯集",
+    "cheatIntersect": "交集",
+    "cheatExclude": "排除"
+  },
+  "select": {
+    "searchOptions_other": "搜尋 {{count}} 個選項…",
+    "noMatches": "沒有符合的項目"
+  },
+  "flowNodes": {
+    "play": "Play",
+    "hostsLabel": "hosts：",
+    "nonIdempotent": "非幂等（Non-idempotent）",
+    "skip": "跳過",
+    "end": "結束",
+    "taskCount_other": "{{count}} 個 task",
+    "missingFile": {
+      "circular": "循環 include — 已在上方展開過",
+      "tooDeep": "巢狀層級過深無法繼續展開 — 檔案已在你的工作區中",
+      "dynamic": "於執行期計算 — 無法靜態解析",
+      "notInWorkspace": "檔案不在工作區中 — 加入以展開"
+    }
+  },
+  "flowCanvas": {
+    "exportDiagram": "匯出流程圖",
+    "export": "匯出"
+  },
+  "about": {
+    "badge": "關於 / 法律聲明",
+    "heading": "獨立的 Ansible® 學習工具",
+    "intro": "Ansible101 是一個獨立、完全在瀏覽器內運作的網站，提供教學、評論、視覺化說明、除錯演練，以及針對 Ansible playbook 與 Jinja 表達式的安全實驗環境。這個專案的目的，是透過把 YAML 轉換成視覺化流程與白話說明，幫助學習者與實務工作者更快理解自動化的邏輯。",
+    "purpose": {
+      "title": "目的",
+      "body": "提供教學、評論、playbook 拆解說明，以及不需要遠端主機或運作中控制節點即可動手探索 Ansible 邏輯的環境。"
+    },
+    "independence": {
+      "title": "獨立性",
+      "body": "本網站由社群自建，並非官方文件入口、支援管道、教育訓練產品或認證服務。"
+    },
+    "trademark": {
+      "title": "商標聲明",
+      "body": "Ansible101 與 Red Hat, Inc. 沒有任何關聯、非其背書，亦非其贊助。Ansible® 為 Red Hat, LLC 的註冊商標，已在美國及其他國家完成註冊。"
+    },
+    "legalSummary": {
+      "title": "法律摘要",
+      "para1": "Ansible101 的存在目的，是針對 Ansible 相關概念提供獨立的評論、教育、評測與實驗工具。任何對 Ansible 模組、playbook、術語或商標的提及，僅用於說明相容性、解釋工作流程，以及輔助學習之用。",
+      "para2": "本網站上的任何內容，均不應被解讀為 Red Hat 官方指引、產品支援、認證教材，或供應商授權的訓練課程。如需權威性的產品行為、授權、支援條款與商標政策說明，使用者應參閱供應商的官方文件。"
+    },
+    "needOfficialDocs": "需要官方文件？"
+  },
+  "tour": {
+    "common": {
+      "next": "下一步 →",
+      "prev": "← 上一步",
+      "done": "完成"
+    },
+    "playbook": {
+      "modeTabs": {
+        "title": "模式切換",
+        "description": "在 <b>Playbook</b>、<b>Snippet</b>、<b>Jinja2</b> 與 <b>Limits</b> 檢視畫面之間切換。每個模式都是獨立的 — 切換時你的內容會被保留。"
+      },
+      "editorPane": {
+        "title": "YAML 編輯器",
+        "description": "在這裡貼上或輸入你的 Ansible playbook。編輯器提供語法高亮、錯誤波浪底線，以及點擊流程節點時的行級高亮。"
+      },
+      "fileExplorer": {
+        "title": "檔案總管",
+        "description": "在這裡以分頁方式新增額外的 task 檔案（<code>include_tasks</code>、role 檔案、指令碼）。拖曳分頁可以重新排序。流程圖會自動解析跨檔案的 task 參照。"
+      },
+      "flowPane": {
+        "title": "執行流程",
+        "description": "即時顯示 playbook 中每個 play、task 與 handler 的圖形。<b>點擊任一節點</b>即可跳到編輯器中對應位置，並在右側看到白話說明。"
+      },
+      "humanSidebar": {
+        "title": "白話說明",
+        "description": "以白話文說明所選的 task 或 play — 使用了哪個模組、它做了什麼，以及套用了哪些條件或迴圈。"
+      },
+      "btnVars": {
+        "title": "Playbook 變數",
+        "description": "覆寫 playbook 中定義的 <code>vars</code> 與 <code>vars_files</code> 值。適合用來測試不同的變數組合，而不需要修改 YAML。"
+      },
+      "btnFacts": {
+        "title": "模擬 Ansible Facts",
+        "description": "模擬 <code>ansible_facts</code> — 也就是 Ansible 在執行期蒐集的主機變數。流程圖與 Jinja2 渲染器會用這些值來評估 <code>when</code> 條件與變數表達式。"
+      },
+      "viewTabs": {
+        "title": "變數解析器",
+        "description": "這個分頁回答一個經典的 Ansible 問題：「我在 3 個地方都設定了這個變數 — 到底哪一個會贏？」現在就帶你切過去。"
+      },
+      "resolverPickers": {
+        "title": "選擇你要解析的目標",
+        "description": "兩個下拉選單：選擇 <b>inventory</b> 與 <b>host</b>。變數在每個主機上可能解析出不同結果 — 改變任一個，表格就會立即更新。（若要解析不同的 playbook，請在上方工具列切換目前作用中的 playbook。）"
+      },
+      "resolverActions": {
+        "title": "把變數送到別的地方",
+        "description": "找到一個值得在別處測試的值了嗎？<b>用於 Flow</b> 會把這個主機已解析的變數載入「執行流程」分頁。<b>Jinja2</b> 則會載入到 Jinja2 沙盒中。"
+      },
+      "resolverGroups": {
+        "title": "群組成員關係",
+        "description": "這個主機所屬的每一個 inventory <b>群組</b>，以及鎖定它的每一個 <b>play</b>。這很重要，因為 <code>group_vars</code> 只會套用到真正屬於該群組的主機。"
+      },
+      "resolverFilters": {
+        "title": "縮小清單範圍",
+        "description": "<b>Filter</b> 依名稱搜尋。<b>僅顯示有被參照的</b> 會隱藏你的 playbook 實際上從未使用過的變數。<b>顯示 facts</b> 會顯示 Ansible 內建的 <code>ansible_*</code> facts（預設隱藏 — 因為數量非常多）。"
+      },
+      "resolverExtravars": {
+        "title": "Extra Vars (-e)",
+        "description": "模擬執行 <code>ansible-playbook -e ...</code>。選擇一個 vars 檔案，或輸入 <code>key=value</code> 組合。<br><br>這些值永遠<b>贏過</b>其他任何來源 — 這是優先權第 <code>L22</code> 層，是最高的一層。"
+      },
+      "resolverMocks": {
+        "title": "模擬執行期的值",
+        "description": "有些變數只在 playbook 實際執行時才存在 — 像是 facts、<code>register</code> 的結果、role 參數。在這裡給它們一個測試值，讓表格（以及 Jinja2 表達式）能正常解析，而不是顯示「undefined」。"
+      },
+      "resolverTable": {
+        "title": "「L」標籤 = 優先權排名",
+        "description": "每個變數都會有一個像 <code>L11</code> 或 <code>L12</code> 這樣的標籤。可以把它想成一個<b>從 1 到 22 的優先權排名</b> — <code>L1</code> 是最弱的來源，<code>L22</code> 是最強的。<br><br><b>數字越大永遠勝出</b> — 不管它出現在你檔案中的哪個位置。這就是為什麼這裡 <code>L12</code>（play 的 <code>vars:</code>）會贏過 <code>L11</code>（host facts），即使 facts 通常「更具體」。<br><br>把滑鼠移到任一標籤上可以看到它的完整名稱。點擊一列可以看到該變數所有被設定過的地方，並依優先權排序。"
+      },
+      "resolverStack": {
+        "title": "看看它在哪裡都被設定過",
+        "description": "點擊一列會開啟這個面板 — 列出該變數每一個被定義過的地方，不只是最終勝出者，並依優先權排序。（已幫你選好下方這一個。）<br><br>最上方 <span style=\"color:#34d399\">綠色</span> 的項目是勝出者。下方變暗的項目則是被覆蓋了 — 它們確實被設定過，但被更高層級的來源蓋過了。旁邊的小圖示 <span>↗</span> 連結到 Ansible 官方的優先權文件。"
+      },
+      "btnShare": {
+        "title": "分享",
+        "description": "把一個編碼了目前 playbook 與額外檔案的網址複製到你的剪貼簿。任何拿到連結的人都會開啟和你完全一樣的畫面。"
+      }
+    },
+    "snippet": {
+      "modeTabs": {
+        "title": "Snippet 模式",
+        "description": "在這裡貼上<b>單一個 Ansible task</b>，即可立即取得視覺化拆解 — 不需要完整的 playbook。"
+      },
+      "editorPane": {
+        "title": "Task YAML",
+        "description": "以 YAML 格式貼上一個 task。例如：<pre>- name: Install nginx\n  apt:\n    name: nginx\n    state: present</pre>卡片會隨著你輸入即時更新。"
+      },
+      "snippetPane": {
+        "title": "Quick Card",
+        "description": "這個 task 的視覺化拆解：使用的模組、每個參數、任何 <code>when</code> 條件、迴圈與標籤 — 全部以白話文解釋。"
+      },
+      "btnFacts": {
+        "title": "模擬 Facts",
+        "description": "提供模擬的 facts，用來評估這個 task 中的 <code>when</code> 條件與 Jinja2 表達式。"
+      }
+    },
+    "jinja2": {
+      "modeTabs": {
+        "title": "Jinja2 模式",
+        "description": "Ansible <b>Jinja2 模板引擎</b>的沙盒。貼上任何表達式，即可逐步追蹤它是如何被求值的。"
+      },
+      "editorPane": {
+        "title": "Jinja2 表達式",
+        "description": "輸入任何 Jinja2 模板 — 變數查詢、filter、條件式、迴圈。範例：<code>{{ inventory_hostname | upper }}</code>"
+      },
+      "jinja2Pane": {
+        "title": "Pipeline 檢視",
+        "description": "顯示求值管線中的每一步：變數代換 → 套用 filter → 最終輸出。把滑鼠移到任一步上可以看到中間值。"
+      },
+      "btnFacts": {
+        "title": "模擬 Facts",
+        "description": "定義 Jinja2 表達式可以參照的變數。加入你自己的主機名稱、IP、自訂變數 — 任何模板需要用到的東西。"
+      }
+    },
+    "limits": {
+      "modeTabs": {
+        "title": "Limits 模式",
+        "description": "測試 Ansible <code>--limit</code> 旗標的沙盒。建立一個 inventory、撰寫一個 pattern，即可立即看到哪些主機符合。"
+      },
+      "inventoryEditor": {
+        "title": "Inventory 編輯器",
+        "description": "以視覺化方式定義你的 inventory — 新增群組、把主機加入群組，或匯入一份真實的 inventory 檔案（來自 <code>ansible-inventory --list</code> 的 JSON、INI，或 YAML 格式）。"
+      },
+      "inventoryImport": {
+        "title": "匯入 Inventory",
+        "description": "點擊<b>匯入</b>，或直接把 inventory 檔案<b>貼上／拖放</b>到這個面板上。支援 <code>ansible-inventory --list</code> 的 JSON、傳統 INI，以及 YAML 格式。"
+      },
+      "limitInput": {
+        "title": "Limit Pattern",
+        "description": "輸入一個 Ansible <code>--limit</code> pattern。範例：<code>web:db</code>（聯集）、<code>web:&amp;production</code>（交集）、<code>all:!staging</code>（排除）、<code>web-0*</code>（萬用字元）。輸入時會自動建議群組與主機。"
+      },
+      "limitResults": {
+        "title": "比對結果",
+        "description": "每個群組都會列出其主機。<b>符合的主機</b>以綠色標示，<b>被排除的主機</b>則會變暗。點擊任一主機即可開啟其詳細資訊面板。"
+      }
+    }
+  }
+}

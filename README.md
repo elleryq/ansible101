@@ -11,6 +11,8 @@
 
 **Visual debugger · Logic explainer · Jinja2 sandbox for Ansible playbooks**
 
+**English** | [繁體中文](README.zh-TW.md)
+
 [![React](https://img.shields.io/badge/React-18-61dafb?style=flat-square&logo=react)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-6-646cff?style=flat-square&logo=vite)](https://vitejs.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)

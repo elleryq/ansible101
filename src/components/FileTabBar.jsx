@@ -6,9 +6,11 @@
  * renamed (double-click), and removed.
  */
 import React, { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus, X, FileCode } from 'lucide-react'
 
 export default function FileTabBar({ files, activeId, onSwitch, onAdd, onRemove, onRename }) {
+  const { t } = useTranslation()
   return (
     <div className="flex items-center border-b border-slate-800 bg-slate-900 overflow-x-auto shrink-0 min-h-[33px]">
       {files.map((f) => (
@@ -23,17 +25,18 @@ export default function FileTabBar({ files, activeId, onSwitch, onAdd, onRemove,
       ))}
       <button
         onClick={onAdd}
-        title="Add a file — name it to match an include_tasks or roles/name/tasks/main.yml reference"
+        title={t('fileTabBar.addFileTitle')}
         className="flex items-center gap-1 px-2.5 py-1.5 text-slate-500 hover:text-cyan-400 text-xs font-mono transition-colors shrink-0 whitespace-nowrap"
       >
         <Plus size={11} />
-        <span className="text-[10px]">add file</span>
+        <span className="text-[10px]">{t('fileTabBar.addFile')}</span>
       </button>
     </div>
   )
 }
 
 function FileTab({ file, active, onSwitch, onRemove, onRename }) {
+  const { t } = useTranslation()
   const inputRef = useRef(null)
   const [editing, setEditing] = useState(false)
 
@@ -81,7 +84,7 @@ function FileTab({ file, active, onSwitch, onRemove, onRename }) {
         <button
           onClick={(e) => { e.stopPropagation(); onRemove() }}
           className="opacity-0 group-hover:opacity-60 hover:!opacity-100 text-slate-500 hover:text-red-400 transition-all ml-0.5"
-          title="Remove file"
+          title={t('fileTabBar.removeFile')}
         >
           <X size={10} />
         </button>
